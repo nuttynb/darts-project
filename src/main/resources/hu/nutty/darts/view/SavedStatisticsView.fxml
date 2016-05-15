@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.BorderPane?>
+
+<BorderPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="hu.nutty.darts.view.SavedStatisticsController">
+   <center>
+      <TableView fx:id="playersTable" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+        <columns>
+          <TableColumn fx:id="nameColumn" prefWidth="75.0" text="Name" />
+          <TableColumn fx:id="nicknameColumn" prefWidth="75.0" text="Nickname" />
+            <TableColumn fx:id="emailColumn" prefWidth="75.0" text="Email" />
+            <TableColumn fx:id="levelColumn" prefWidth="75.0" text="Level" />
+            <TableColumn fx:id="dartsAvgColumn" prefWidth="75.0" text="Darts" />
+            <TableColumn fx:id="darts3AvgColumn" prefWidth="75.0" text="3 Darts" />
+            <TableColumn fx:id="firstNineColumn" prefWidth="75.0" text="First Nine" />
+            <TableColumn fx:id="highOutColumn" prefWidth="75.0" text="High Out" />
+            <TableColumn fx:id="bestDartsColumn" prefWidth="75.0" text="Best Darts" />
+            <TableColumn fx:id="tonsColumn" prefWidth="75.0" text="100+" />
+            <TableColumn fx:id="tonFortyColumn" prefWidth="75.0" text="140+" />
+            <TableColumn fx:id="tonEightyColumn" prefWidth="75.0" text="180+" />
+        </columns>
+         <columnResizePolicy>
+            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+         </columnResizePolicy>
+      </TableView>
+   </center>
+</BorderPane>
