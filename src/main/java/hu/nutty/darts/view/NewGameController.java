@@ -24,7 +24,6 @@ import javafx.stage.Stage;
 public class NewGameController {
 
 	private GameController gc;
-	private DartsMainController dmc;
 	private static ResourceBundle bundle;
 	private Scene scene;
 	private Stage stage;
@@ -35,9 +34,8 @@ public class NewGameController {
 		bundle = _bundle;
 	}
 
-	public void setMain(GameController gc, DartsMainController dmc) {
+	public void setMain(GameController gc) {
 		this.gc = gc;
-		this.dmc = dmc;
 	}
 
 	public void setScene(Scene scene) {
@@ -150,8 +148,10 @@ public class NewGameController {
 		if (player1Choice.getValue() != null && player2Choice.getValue() != null) {
 			if (!player1.equals(player2)) {
 				gc.newGameSelectedItems(player1, player2, gameType);
-				dmc.initializeTableValues();
+				gc.getDmc().initializeTableValues();
 				gc.getDmc().refreshStats();
+				gc.getDmc().clearCheckout();
+				gc.getDmc().setActualPlayerThrowing(0);
 				stage.close();
 			} else
 				AlertBox.display(bundle.getString("error"), bundle.getString("same"));

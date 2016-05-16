@@ -222,7 +222,7 @@ public class GameController extends Application {
 
 			BorderPane newGame = (BorderPane) loader.load();
 			NewGameController controller = loader.getController();
-			controller.setMain(this, dmc);
+			controller.setMain(this);
 
 			Stage stage = new Stage();
 			stage.initModality(Modality.APPLICATION_MODAL);

@@ -20,13 +20,13 @@ public class Throw {
 	public Integer getScore() {
 		return score;
 	}
-	public void setScore(int score) {
+	public void setScore(Integer score) {
 		this.score = score;
 	}
 	public Integer getToGo() {
 		return toGo;
 	}
-	public void setToGo(int toGo) {
+	public void setToGo(Integer toGo) {
 		this.toGo = toGo;
 	}
 	

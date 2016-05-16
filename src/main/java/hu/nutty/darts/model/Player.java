@@ -132,7 +132,7 @@ public class Player {
 		return throwList;
 	}
 
-	private void calculateStats() {
+	public void calculateStats() {
 		if (dartsThrownInLeg <= 9){
 			actualFirstNine = (double) actualFirstNineSumScore / (double) actualFirstNineThrown * 3.0;
 			actualFirstNine = Math.floor(actualFirstNine * 100) / 100;
@@ -183,8 +183,10 @@ public class Player {
 			if (newLastToGo <= 158 || newLastToGo == 170 || newLastToGo == 167 || newLastToGo == 164
 					|| newLastToGo == 161 || newLastToGo == 160) {
 				checkoutZone = true;
-				if (newLastToGo == 0 || (newLastToGo < 40 && newLastToGo % 2 == 1))
+				if (newLastToGo == 0 || (newLastToGo < 40 && newLastToGo % 2 == 1)){
 					checkoutZone = false;
+					gc.getDmc().clearCheckout();
+				}
 				if (checkoutZone)
 					gc.getDmc().displayCheckoutTable(newLastToGo);
 			}
@@ -381,5 +383,30 @@ public class Player {
 	public void setSavedBestDarts(int savedBestDarts) {
 		this.savedBestDarts = savedBestDarts;
 	}
+
+	public int getActualSumScore() {
+		return actualSumScore;
+	}
+
+	public void setActualSumScore(int actualSumScore) {
+		this.actualSumScore = actualSumScore;
+	}
+
+	public int getActualFirstNineSumScore() {
+		return actualFirstNineSumScore;
+	}
+
+	public void setActualFirstNineSumScore(int actualFirstNineSumScore) {
+		this.actualFirstNineSumScore = actualFirstNineSumScore;
+	}
+
+	public int getDartsThrownInLeg() {
+		return dartsThrownInLeg;
+	}
+
+	public void setDartsThrownInLeg(int dartsThrownInLeg) {
+		this.dartsThrownInLeg = dartsThrownInLeg;
+	}
+	
 
 }

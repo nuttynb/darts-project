@@ -1,36 +1,26 @@
 package hu.nutty.darts.view;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
-
 import hu.nutty.darts.controller.GameController;
-import hu.nutty.darts.model.Player;
 import hu.nutty.darts.model.Throw;
 import hu.nutty.darts.model.n01;
-import javafx.application.Platform;
-import javafx.beans.binding.Bindings;
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleDoubleProperty;
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableColumn.CellEditEvent;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.input.KeyCode;
+import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.text.Font;
+import javafx.util.converter.IntegerStringConverter;
 
 public class DartsMainController {
 	private static GameController gc;
@@ -135,7 +125,67 @@ public class DartsMainController {
 		average2Label.setText(bundle.getString("average"));
 		firstNine2Label.setText(bundle.getString("firstnine"));
 		statistics2Label.setText(bundle.getString("statistics"));
+		clearCheckout();
+		player1Table.setEditable(true);
+		player1Score.setCellFactory(TextFieldTableCell.<Throw, Integer> forTableColumn(new IntegerStringConverter()));
+		player1Score.setOnEditCommit(new EventHandler<CellEditEvent<Throw, Integer>>() {
+			@Override
+			public void handle(CellEditEvent<Throw, Integer> t) {
+				int modifiedRow = t.getTablePosition().getRow();
 
+				ObservableList<Throw> newThrowList = FXCollections.observableArrayList(gc.getPlayer1().getThrowList());
+				if (newThrowList.size() - 1 == modifiedRow) {
+					t.getRowValue().setScore(null);
+					t.getTableView().refresh();
+				} else if (t.getNewValue() > 180) {
+					t.getRowValue().setScore(t.getOldValue());
+					t.getTableView().refresh();
+				} else {
+					int actualToGo = newThrowList.get(modifiedRow).getToGo();
+					newThrowList.remove(modifiedRow);
+					newThrowList.add(modifiedRow, new Throw(t.getNewValue(), actualToGo));
+					gc.getPlayer1().initializeStats();
+					for (Throw throw1 : newThrowList) {
+						if (throw1.getScore() != null) {
+							gc.getPlayer1().addThrow(throw1.getScore());
+						}
+					}
+				}
+				clearCheckout();
+				initializeTableValues();
+				refreshStats();
+			}
+		});
+		player2Table.setEditable(true);
+		player2Score.setCellFactory(TextFieldTableCell.<Throw, Integer> forTableColumn(new IntegerStringConverter()));
+		player2Score.setOnEditCommit(new EventHandler<CellEditEvent<Throw, Integer>>() {
+			@Override
+			public void handle(CellEditEvent<Throw, Integer> t) {
+				int modifiedRow = t.getTablePosition().getRow();
+
+				ObservableList<Throw> newThrowList = FXCollections.observableArrayList(gc.getPlayer2().getThrowList());
+				if (newThrowList.size() - 1 == modifiedRow) {
+					t.getRowValue().setScore(null);
+					t.getTableView().refresh();
+				} else if (t.getNewValue() > 180) {
+					t.getRowValue().setScore(t.getOldValue());
+					t.getTableView().refresh();
+				} else {
+					int actualToGo = newThrowList.get(modifiedRow).getToGo();
+					newThrowList.remove(modifiedRow);
+					newThrowList.add(modifiedRow, new Throw(t.getNewValue(), actualToGo));
+					gc.getPlayer2().initializeStats();
+					for (Throw throw1 : newThrowList) {
+						if (throw1.getScore() != null) {
+							gc.getPlayer2().addThrow(throw1.getScore());
+						}
+					}
+				}
+				clearCheckout();
+				initializeTableValues();
+				refreshStats();
+			}
+		});
 		/*
 		 * gc.getPrimaryStage().widthProperty().addListener(new
 		 * ChangeListener<Number>() {
@@ -192,11 +242,15 @@ public class DartsMainController {
 		p2BestDartsLabel.setText(String.valueOf(gc.getPlayer2().getActualBestDarts()));
 		p1FirstNineLabel.setText(String.valueOf(gc.getPlayer1().getActualFirstNine()));
 		p2FirstNineLabel.setText(String.valueOf(gc.getPlayer2().getActualFirstNine()));
-
 	}
 
 	public void invalidThrow() {
 		actualPlayerThrowing--;
+	}
+
+	public void clearCheckout() {
+		checkout1Label.setText("");
+		checkout2Label.setText("");
 	}
 
 	public void playerWonLeg(String name, int dartsThrown) {
@@ -206,6 +260,7 @@ public class DartsMainController {
 		gc.getPlayer1().resetThrows();
 		// gc.getGame().getPlayers().get(1).resetThrows();
 		gc.getPlayer2().resetThrows();
+		clearCheckout();
 		initializeTableValues();
 	}
 
@@ -269,6 +324,14 @@ public class DartsMainController {
 		player1Table.scrollTo(tableSize);
 		tableSize = player2Table.getItems().size() - 1;
 		player2Table.scrollTo(tableSize);
+	}
+
+	public int getActualPlayerThrowing() {
+		return actualPlayerThrowing;
+	}
+
+	public void setActualPlayerThrowing(int actualPlayerThrowing) {
+		this.actualPlayerThrowing = actualPlayerThrowing;
 	}
 
 }
