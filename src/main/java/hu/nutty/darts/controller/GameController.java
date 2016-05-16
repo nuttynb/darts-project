@@ -154,9 +154,9 @@ public class GameController extends Application {
 		createFolder(SETTINGSFOLDER);
 		this.primaryStage = primaryStage;
 		this.primaryStage.setTitle("Darts");
-		// AquaFx.style();
-		// setUserAgentStylesheet(STYLESHEET_MODENA);
-		setUserAgentStylesheet(STYLESHEET_CASPIAN);
+		//AquaFx.style();
+		setUserAgentStylesheet(STYLESHEET_MODENA);
+		//setUserAgentStylesheet(STYLESHEET_CASPIAN);
 		createRootPane();
 		showDartsMainOverview();
 		createNewGameView();
