@@ -93,8 +93,10 @@ public class GameController extends Application {
 		settings.setCaspianTheme(caspianTheme);
 		settings.setAquaTheme(aquaTheme);
 		refreshAfterSettings();
-		dmc.initializeTableValues();
-		dmc.refreshStats();
+		if (player1 != null && player2 != null) {
+			dmc.initializeTableValues();
+			dmc.refreshStats();
+		}
 		saveSettingsToXML(settings);
 	}
 
@@ -193,15 +195,16 @@ public class GameController extends Application {
 		AboutController.setMain(this);
 		createFolder(PLAYERFOLDER);
 		createFolder(SETTINGSFOLDER);
-		this.primaryStage = primaryStage;	
-		this.primaryStage.getIcons().add(new Image(this.getClass().getClassLoader().getResourceAsStream("hu/nutty/darts/dartsicon.png")));
+		this.primaryStage = primaryStage;
+		this.primaryStage.getIcons()
+				.add(new Image(this.getClass().getClassLoader().getResourceAsStream("hu/nutty/darts/dartsicon.png")));
 		File settingsxml = new File(SETTINGSFOLDER + "settings.xml");
 		SettingsController.setBundle(bundle);
 		if (!settingsxml.exists()) {
 			try {
 				settings = loadDefaultSettings();
 				saveSettingsToXML(settings);
-				
+
 			} catch (JAXBException e) {
 				e.printStackTrace();
 			}

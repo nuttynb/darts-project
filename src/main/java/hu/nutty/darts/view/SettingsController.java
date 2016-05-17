@@ -67,6 +67,10 @@ public class SettingsController {
 		gc.settingsChosen(engRadio.isSelected(), hunRadio.isSelected(), modenaRadio.isSelected(), caspianRadio.isSelected(), aquaRadio.isSelected());
 		stage.close();
 	}
+	@FXML
+	private void handleCancelButton(){
+		stage.close();
+	}
 	
 
 }
