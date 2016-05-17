@@ -20,9 +20,9 @@
               <MenuItem fx:id="exitItem" mnemonicParsing="false" onAction="#handleExitItem" text="Exit..." />
             </items>
           </Menu>
-          <Menu mnemonicParsing="false" text="_Help">
+          <Menu fx:id="helpMenu" mnemonicParsing="false" text="_Help">
             <items>
-              <MenuItem mnemonicParsing="false" text="About" />
+              <MenuItem fx:id="aboutItem" mnemonicParsing="false" onAction="#handleAbout" text="About" />
             </items>
           </Menu>
         </menus>

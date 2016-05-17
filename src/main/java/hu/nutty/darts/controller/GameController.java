@@ -20,6 +20,7 @@ import hu.nutty.darts.model.Player;
 import hu.nutty.darts.model.Settings;
 import hu.nutty.darts.model.XMLUtil;
 import hu.nutty.darts.model.n01;
+import hu.nutty.darts.view.AboutController;
 import hu.nutty.darts.view.AlertBox;
 import hu.nutty.darts.view.ConfirmBox;
 import hu.nutty.darts.view.CreatePlayerController;
@@ -34,6 +35,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -91,6 +93,8 @@ public class GameController extends Application {
 		settings.setCaspianTheme(caspianTheme);
 		settings.setAquaTheme(aquaTheme);
 		refreshAfterSettings();
+		dmc.initializeTableValues();
+		dmc.refreshStats();
 		saveSettingsToXML(settings);
 	}
 
@@ -186,14 +190,18 @@ public class GameController extends Application {
 		SavedStatisticsController.setMain(this);
 		Player.setMain(this);
 		Game.setMain(this);
+		AboutController.setMain(this);
 		createFolder(PLAYERFOLDER);
 		createFolder(SETTINGSFOLDER);
-		this.primaryStage = primaryStage;
-
+		this.primaryStage = primaryStage;	
+		this.primaryStage.getIcons().add(new Image(this.getClass().getClassLoader().getResourceAsStream("hu/nutty/darts/dartsicon.png")));
 		File settingsxml = new File(SETTINGSFOLDER + "settings.xml");
+		SettingsController.setBundle(bundle);
 		if (!settingsxml.exists()) {
 			try {
 				settings = loadDefaultSettings();
+				saveSettingsToXML(settings);
+				
 			} catch (JAXBException e) {
 				e.printStackTrace();
 			}
@@ -235,6 +243,7 @@ public class GameController extends Application {
 		DartsMainController.setBundle(bundle);
 		SavedStatisticsController.setBundle(bundle);
 		SettingsController.setBundle(bundle);
+		AboutController.setBundle(bundle);
 		if (rootPane == null)
 			createRootPane();
 		else
@@ -339,7 +348,7 @@ public class GameController extends Application {
 			SettingsController controller = loader.getController();
 			Stage stage = new Stage();
 			stage.initModality(Modality.APPLICATION_MODAL);
-			stage.setTitle("Settingssssssssssss");
+			stage.setTitle(bundle.getString("settings"));
 			stage.centerOnScreen();
 			stage.setResizable(false);
 			Scene scene = new Scene(settingsPane);

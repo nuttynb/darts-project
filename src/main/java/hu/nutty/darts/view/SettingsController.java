@@ -6,6 +6,7 @@ import hu.nutty.darts.controller.GameController;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.stage.Stage;
 
@@ -28,9 +29,18 @@ public class SettingsController {
 	private Button okButton;
 	@FXML
 	private Button cancelButton;
+	@FXML
+	private Label langLabel;
+	@FXML
+	private Label themesLabel;
+	
 	
 	@FXML
 	private void initialize() {
+		hunRadio.setText(bundle.getString("hungarian"));
+		engRadio.setText(bundle.getString("english"));
+		langLabel.setText(bundle.getString("languages"));
+		themesLabel.setText(bundle.getString("themes"));
 		hunRadio.setSelected(gc.getSettings().isHungarianLang());
 		engRadio.setSelected(gc.getSettings().isEnglishLang());
 		modenaRadio.setSelected(gc.getSettings().isModenaTheme());

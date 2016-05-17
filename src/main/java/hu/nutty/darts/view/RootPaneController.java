@@ -36,6 +36,8 @@ public class RootPaneController {
 	@FXML
 	private Menu fileMenu;
 	@FXML
+	private Menu helpMenu;
+	@FXML
 	private MenuItem newGameItem;
 	@FXML
 	private MenuItem exitItem;
@@ -46,11 +48,17 @@ public class RootPaneController {
 	@FXML
 	private MenuItem settingsItem;
 	@FXML
+	private MenuItem aboutItem;
+	@FXML
 	public void initialize() {
 		fileMenu.setText(bundle.getString("filemenu"));
+		helpMenu.setText(bundle.getString("helpmenu"));
+		aboutItem.setText(bundle.getString("aboutmenu"));
 		newGameItem.setText(bundle.getString("newgamemenu"));
 		exitItem.setText(bundle.getString("exitmenu"));
 		snapshotItem.setText(bundle.getString("snapshot"));
+		showStatsItem.setText(bundle.getString("showstatsmenu"));
+		settingsItem.setText(bundle.getString("settingsmenu"));
 	}
 	@FXML
 	private void openNewGameView(){
@@ -82,7 +90,7 @@ public class RootPaneController {
 			BorderPane stats = (BorderPane) loader.load();
 			Stage stage = new Stage();
 			stage.initModality(Modality.APPLICATION_MODAL);
-			stage.setTitle("Player statistics");
+			stage.setTitle(bundle.getString("statistics"));
 			stage.centerOnScreen();
 			Scene scene = new Scene(stats);
 			stage.setScene(scene);
@@ -90,6 +98,24 @@ public class RootPaneController {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+	@FXML
+	public void handleAbout() {
+		try {
+			FXMLLoader loader = new FXMLLoader();
+			loader.setLocation(getClass().getClassLoader().getResource("hu/nutty/darts/view/AboutView.fxml"));
+			BorderPane about = (BorderPane) loader.load();
+			Stage stage = new Stage();
+			stage.initModality(Modality.APPLICATION_MODAL);
+			stage.setTitle(bundle.getString("about"));
+			stage.centerOnScreen();
+			Scene scene = new Scene(about);
+			stage.setScene(scene);
+			stage.showAndWait();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
 	}
 	@FXML
 	public void settingsOnClicked() {
