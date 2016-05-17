@@ -185,7 +185,7 @@ public class Player {
 				checkoutZone = true;
 				if (newLastToGo == 0 || (newLastToGo < 40 && newLastToGo % 2 == 1)){
 					checkoutZone = false;
-					gc.getDmc().clearCheckout();
+					gc.getDmc().clearCheckout(nickname);
 				}
 				if (checkoutZone)
 					gc.getDmc().displayCheckoutTable(newLastToGo);

@@ -44,7 +44,9 @@ public class RootPaneController {
 	@FXML
 	private MenuItem showStatsItem;
 	@FXML
-	private void initialize() {
+	private MenuItem settingsItem;
+	@FXML
+	public void initialize() {
 		fileMenu.setText(bundle.getString("filemenu"));
 		newGameItem.setText(bundle.getString("newgamemenu"));
 		exitItem.setText(bundle.getString("exitmenu"));
@@ -89,6 +91,11 @@ public class RootPaneController {
 			e.printStackTrace();
 		}
 	}
+	@FXML
+	public void settingsOnClicked() {
+		gc.createSettingsView();
+	}
+	
 	
 
 }

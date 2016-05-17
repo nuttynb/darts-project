@@ -13,6 +13,7 @@
           <Menu fx:id="fileMenu" mnemonicParsing="false" text="_File">
             <items>
                   <MenuItem fx:id="newGameItem" mnemonicParsing="false" onAction="#openNewGameView" text="New game..." />
+                  <MenuItem fx:id="settingsItem" mnemonicParsing="false" onAction="#settingsOnClicked" text="Settings" />
                   <MenuItem fx:id="showStatsItem" mnemonicParsing="false" onAction="#handleShowStats" text="Show stats" />
                   <MenuItem fx:id="snapshotItem" mnemonicParsing="false" onAction="#takeSnapshot" text="Snapshot" />
                   <SeparatorMenuItem mnemonicParsing="false" />

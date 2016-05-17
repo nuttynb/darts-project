@@ -150,7 +150,7 @@ public class NewGameController {
 				gc.newGameSelectedItems(player1, player2, gameType);
 				gc.getDmc().initializeTableValues();
 				gc.getDmc().refreshStats();
-				gc.getDmc().clearCheckout();
+				gc.getDmc().clearCheckout(null);
 				gc.getDmc().setActualPlayerThrowing(0);
 				stage.close();
 			} else

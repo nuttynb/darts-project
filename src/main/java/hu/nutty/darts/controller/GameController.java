@@ -17,15 +17,18 @@ import com.aquafx_project.AquaFx;
 import hu.nutty.darts.model.Game;
 import hu.nutty.darts.model.GameInterface;
 import hu.nutty.darts.model.Player;
+import hu.nutty.darts.model.Settings;
 import hu.nutty.darts.model.XMLUtil;
 import hu.nutty.darts.model.n01;
 import hu.nutty.darts.view.AlertBox;
 import hu.nutty.darts.view.ConfirmBox;
 import hu.nutty.darts.view.CreatePlayerController;
+import hu.nutty.darts.view.CricketMainController;
 import hu.nutty.darts.view.DartsMainController;
 import hu.nutty.darts.view.NewGameController;
 import hu.nutty.darts.view.RootPaneController;
 import hu.nutty.darts.view.SavedStatisticsController;
+import hu.nutty.darts.view.SettingsController;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -45,6 +48,9 @@ public class GameController extends Application {
 	private Player player1;
 	private Player player2;
 	private DartsMainController dmc;
+	private CricketMainController cmc;
+	private RootPaneController rpc;
+	private Settings settings = Settings.getInstance();
 	List<Player> players = new ArrayList<>();
 
 	public final static String PLAYERFOLDER = "darts_files/players/";
@@ -58,13 +64,43 @@ public class GameController extends Application {
 			e.printStackTrace();
 		}
 	}
-	public void setGameResult(String winner){
+
+	public void saveSettingsToXML(Settings settings) {
+		try {
+			XMLUtil.toXML(settings, new FileOutputStream(new File(SETTINGSFOLDER + "settings.xml")));
+		} catch (FileNotFoundException | JAXBException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public Settings loadSettings() throws JAXBException, FileNotFoundException {
+		return XMLUtil.fromXML(Settings.class, new FileInputStream(new File(SETTINGSFOLDER + "settings.xml")));
+	}
+
+	public Settings loadDefaultSettings() throws JAXBException {
+		return XMLUtil.fromXML(Settings.class,
+				getClass().getClassLoader().getResourceAsStream("hu/nutty/darts/defaultsettings.xml"));
+	}
+
+	public void settingsChosen(boolean englishLang, boolean hungarianLang, boolean modenaTheme, boolean caspianTheme,
+			boolean aquaTheme) {
+		settings.setFirstStart(false);
+		settings.setEnglishLang(englishLang);
+		settings.setHungarianLang(hungarianLang);
+		settings.setModenaTheme(modenaTheme);
+		settings.setCaspianTheme(caspianTheme);
+		settings.setAquaTheme(aquaTheme);
+		refreshAfterSettings();
+		saveSettingsToXML(settings);
+	}
+
+	public void setGameResult(String winner) {
 		n01 n01Game = (n01) game;
 		if (winner.equals(player1.getNickname()))
-			n01Game.setPlayer1Legs(n01Game.getPlayer1Legs()+1);
+			n01Game.setPlayer1Legs(n01Game.getPlayer1Legs() + 1);
 		if (winner.equals(player2.getNickname()))
-			n01Game.setPlayer2Legs(n01Game.getPlayer2Legs()+1);
-			
+			n01Game.setPlayer2Legs(n01Game.getPlayer2Legs() + 1);
+
 	}
 
 	public void newGameSelectedItems(String player1, String player2, GameInterface.GameType gameType) {
@@ -84,15 +120,19 @@ public class GameController extends Application {
 			switch (gameType) {
 			case _301:
 				game = new n01(2, players, gameType);
+				showDartsMainOverview();
 				break;
 			case _501:
 				game = new n01(2, players, gameType);
+				showDartsMainOverview();
 				break;
 			case _1001:
 				game = new n01(2, players, gameType);
+				showDartsMainOverview();
 				break;
 			case cricket:
 				game = new n01(2, players, gameType);
+				showCricketMainOverview();
 				break;
 			default:
 				break;
@@ -141,11 +181,7 @@ public class GameController extends Application {
 	public void start(Stage primaryStage) {
 		locale = Locale.getDefault();
 		bundle = ResourceBundle.getBundle("hu.nutty.darts.MessagesBundle.MessagesBundle", locale);
-		RootPaneController.setBundle(bundle);
-		CreatePlayerController.setBundle(bundle);
-		NewGameController.setBundle(bundle);
-		DartsMainController.setBundle(bundle);
-		SavedStatisticsController.setBundle(bundle);
+		SettingsController.setMain(this);
 		DartsMainController.setMain(this);
 		SavedStatisticsController.setMain(this);
 		Player.setMain(this);
@@ -153,13 +189,57 @@ public class GameController extends Application {
 		createFolder(PLAYERFOLDER);
 		createFolder(SETTINGSFOLDER);
 		this.primaryStage = primaryStage;
-		this.primaryStage.setTitle("Darts");
-		//AquaFx.style();
-		setUserAgentStylesheet(STYLESHEET_MODENA);
-		//setUserAgentStylesheet(STYLESHEET_CASPIAN);
-		createRootPane();
-		showDartsMainOverview();
+
+		File settingsxml = new File(SETTINGSFOLDER + "settings.xml");
+		if (!settingsxml.exists()) {
+			try {
+				settings = loadDefaultSettings();
+			} catch (JAXBException e) {
+				e.printStackTrace();
+			}
+			createSettingsView();
+		} else
+			try {
+				settings = loadSettings();
+			} catch (FileNotFoundException | JAXBException e) {
+				e.printStackTrace();
+			}
+		RootPaneController.setBundle(bundle);
+		NewGameController.setBundle(bundle);
+		if (rootPane == null)
+			createRootPane();
+		refreshAfterSettings();
 		createNewGameView();
+
+	}
+
+	public void refreshAfterSettings() {
+
+		if (settings.isEnglishLang()) {
+			locale = Locale.ENGLISH;
+			bundle = ResourceBundle.getBundle("hu.nutty.darts.MessagesBundle.MessagesBundle", locale);
+		} else if (settings.isHungarianLang()) {
+			locale = Locale.forLanguageTag("hu");
+			bundle = ResourceBundle.getBundle("hu.nutty.darts.MessagesBundle.MessagesBundle", locale);
+		}
+		if (settings.isModenaTheme()) {
+			setUserAgentStylesheet(STYLESHEET_MODENA);
+		} else if (settings.isCaspianTheme()) {
+			setUserAgentStylesheet(STYLESHEET_CASPIAN);
+		} else if (settings.isAquaTheme()) {
+			AquaFx.style();
+		}
+		RootPaneController.setBundle(bundle);
+		CreatePlayerController.setBundle(bundle);
+		NewGameController.setBundle(bundle);
+		DartsMainController.setBundle(bundle);
+		SavedStatisticsController.setBundle(bundle);
+		SettingsController.setBundle(bundle);
+		if (rootPane == null)
+			createRootPane();
+		else
+			rpc.initialize();
+		showDartsMainOverview();
 
 	}
 
@@ -172,13 +252,13 @@ public class GameController extends Application {
 			FXMLLoader loader = new FXMLLoader();
 			loader.setLocation(getClass().getClassLoader().getResource("hu/nutty/darts/view/RootPane.fxml"));
 			rootPane = (BorderPane) loader.load();
-			RootPaneController controller = loader.getController();
-			controller.setGameController(this);
+			rpc = loader.getController();
+			rpc.setGameController(this);
 			Scene scene = new Scene(rootPane);
 			// scene.getStylesheets().add("hu/nutty/darts/view/theme.css");
-			primaryStage.setMaximized(true);
 			primaryStage.setMinWidth(800);
 			primaryStage.setMinHeight(600);
+			primaryStage.setMaximized(true);
 			primaryStage.setScene(scene);
 			primaryStage.setTitle("Doxy Darts");
 			primaryStage.setOnCloseRequest(e -> {
@@ -204,12 +284,24 @@ public class GameController extends Application {
 		}
 	}
 
+	public void showCricketMainOverview() {
+		try {
+			FXMLLoader loader = new FXMLLoader();
+			loader.setLocation(getClass().getClassLoader().getResource("hu/nutty/darts/view/CricketMainView.fxml"));
+			BorderPane mainview = (BorderPane) loader.load();
+			cmc = loader.getController();
+			rootPane.setCenter(mainview);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
 	public void exitProgram() {
 		boolean answer = ConfirmBox.display(bundle.getString("exit"), bundle.getString("exitmessage"));
-		if (answer){
-			if (player1 != null && player2 != null){
-			savePlayerToXML(player1);
-			savePlayerToXML(player2);
+		if (answer) {
+			if (player1 != null && player2 != null) {
+				savePlayerToXML(player1);
+				savePlayerToXML(player2);
 			}
 			primaryStage.close();
 		}
@@ -226,10 +318,31 @@ public class GameController extends Application {
 
 			Stage stage = new Stage();
 			stage.initModality(Modality.APPLICATION_MODAL);
-			stage.setTitle("New Game");
+			stage.setTitle(bundle.getString("newgame"));
 			stage.centerOnScreen();
 			stage.setResizable(false);
 			Scene scene = new Scene(newGame);
+			controller.setScene(scene);
+			controller.setStage(stage);
+			stage.setScene(scene);
+			stage.showAndWait();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void createSettingsView() {
+		try {
+			FXMLLoader loader = new FXMLLoader();
+			loader.setLocation(getClass().getClassLoader().getResource("hu/nutty/darts/view/SettingsView.fxml"));
+			BorderPane settingsPane = (BorderPane) loader.load();
+			SettingsController controller = loader.getController();
+			Stage stage = new Stage();
+			stage.initModality(Modality.APPLICATION_MODAL);
+			stage.setTitle("Settingssssssssssss");
+			stage.centerOnScreen();
+			stage.setResizable(false);
+			Scene scene = new Scene(settingsPane);
 			controller.setScene(scene);
 			controller.setStage(stage);
 			stage.setScene(scene);
@@ -289,6 +402,14 @@ public class GameController extends Application {
 
 	public Player getPlayer2() {
 		return player2;
+	}
+
+	public Settings getSettings() {
+		return settings;
+	}
+
+	public void setSettings(Settings settings) {
+		this.settings = settings;
 	}
 
 }
