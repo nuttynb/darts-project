@@ -20,10 +20,6 @@ Darts is a form of throwing game in which small missiles are thrown at a circula
     If the number required for game is exceeded in the course of a throw, the throw ceases, and no account is taken of the score obtained during that throw.
     The inner bull(50) counts double of the outer bull(25).
 
-## Code Example
-
-Show what the library does as concisely as possible, developers should be able to figure out **how** your project solves their problem by looking at the code example. Make sure the API you are showing off is obvious, and that your code is short and concise.
-
 ## Motivation
 
 This project exists because I would like to create a Darts helping program that serves every need.
