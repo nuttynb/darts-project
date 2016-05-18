@@ -25,12 +25,15 @@ import javafx.stage.Stage;
 public class RootPaneController {
 	private GameController gc;
 	private static ResourceBundle bundle;
-	public void setGameController(GameController gc){
+
+	public void setGameController(GameController gc) {
 		this.gc = gc;
 	}
+
 	public static void setBundle(ResourceBundle _bundle) {
 		bundle = _bundle;
 	}
+
 	@FXML
 	private MenuBar menuBar;
 	@FXML
@@ -49,6 +52,7 @@ public class RootPaneController {
 	private MenuItem settingsItem;
 	@FXML
 	private MenuItem aboutItem;
+
 	@FXML
 	public void initialize() {
 		fileMenu.setText(bundle.getString("filemenu"));
@@ -59,32 +63,43 @@ public class RootPaneController {
 		snapshotItem.setText(bundle.getString("snapshot"));
 		showStatsItem.setText(bundle.getString("showstatsmenu"));
 		settingsItem.setText(bundle.getString("settingsmenu"));
+		snapshotItem.setDisable(true);
 	}
+
+	public void setSnapshotEnable() {
+		snapshotItem.setDisable(false);
+	}
+
 	@FXML
-	private void openNewGameView(){
+	private void openNewGameView() {
 		gc.createNewGameView();
 	}
+
 	@FXML
-	private void handleExitItem(){
+	private void handleExitItem() {
 		gc.exitProgram();
 	}
+
 	@FXML
 	public void takeSnapshot() {
 		gc.createFolder(gc.SNAPSHOTS);
-	    WritableImage image = gc.getRootPane().snapshot(new SnapshotParameters(), null);
-	    File file = new File(gc.SNAPSHOTS + gc.getPlayer1().getNickname() + "_vs_"+gc.getPlayer2().getNickname()+"_"+ LocalDateTime.now().format( DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss"))+".png");
+		WritableImage image = gc.getRootPane().snapshot(new SnapshotParameters(), null);
+		File file = new File(gc.SNAPSHOTS + gc.getPlayer1().getNickname() + "_vs_" + gc.getPlayer2().getNickname() + "_"
+				+ LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss")) + ".png");
 
-	    try {
-	        ImageIO.write(SwingFXUtils.fromFXImage(image, null), "png", file);
-	    } catch (IOException e) {
-	    }
+		try {
+			ImageIO.write(SwingFXUtils.fromFXImage(image, null), "png", file);
+		} catch (IOException e) {
+		}
 	}
-	
+
 	@FXML
 	public void handleShowStats() {
 		try {
-			gc.savePlayerToXML(gc.getPlayer1());
-			gc.savePlayerToXML(gc.getPlayer2());
+			if (gc.getPlayer1() != null && gc.getPlayer2() != null) {
+				gc.savePlayerToXML(gc.getPlayer1());
+				gc.savePlayerToXML(gc.getPlayer2());
+			}
 			FXMLLoader loader = new FXMLLoader();
 			loader.setLocation(getClass().getClassLoader().getResource("hu/nutty/darts/view/SavedStatisticsView.fxml"));
 			BorderPane stats = (BorderPane) loader.load();
@@ -99,6 +114,7 @@ public class RootPaneController {
 			e.printStackTrace();
 		}
 	}
+
 	@FXML
 	public void handleAbout() {
 		try {
@@ -115,13 +131,12 @@ public class RootPaneController {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+
 	}
+
 	@FXML
 	public void settingsOnClicked() {
 		gc.createSettingsView();
 	}
-	
-	
 
 }

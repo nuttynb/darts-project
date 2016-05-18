@@ -133,12 +133,12 @@ public class Player {
 	}
 
 	public void calculateStats() {
-		if (dartsThrownInLeg <= 9){
+		if (dartsThrownInLeg <= 9) {
 			actualFirstNine = (double) actualFirstNineSumScore / (double) actualFirstNineThrown * 3.0;
 			actualFirstNine = Math.floor(actualFirstNine * 100) / 100;
 			savedFirstNine = (double) savedFirstNineSumScore / (double) savedFirstNineThrown * 3.0;
 			savedFirstNine = Math.floor(savedFirstNine * 100) / 100;
-			
+
 		}
 		actualDartsAvg = (double) actualSumScore / (double) actualDartsThrown;
 		actual3DartsAvg = actualDartsAvg * 3.0;
@@ -162,9 +162,9 @@ public class Player {
 			savedDartsThrown += 3;
 			actualSumScore += score;
 			savedSumScore += score;
-			if (dartsThrownInLeg <= 9){
-				actualFirstNineThrown+=3;
-				savedFirstNineThrown+=3;
+			if (dartsThrownInLeg <= 9) {
+				actualFirstNineThrown += 3;
+				savedFirstNineThrown += 3;
 				actualFirstNineSumScore += score;
 				savedFirstNineSumScore += score;
 			}
@@ -183,11 +183,11 @@ public class Player {
 			if (newLastToGo <= 158 || newLastToGo == 170 || newLastToGo == 167 || newLastToGo == 164
 					|| newLastToGo == 161 || newLastToGo == 160) {
 				checkoutZone = true;
-				if (newLastToGo == 0 || (newLastToGo < 40 && newLastToGo % 2 == 1)){
+				if (gc != null && newLastToGo == 0 || (newLastToGo < 40 && newLastToGo % 2 == 1)) {
 					checkoutZone = false;
 					gc.getDmc().clearCheckout(nickname);
 				}
-				if (checkoutZone)
+				if (checkoutZone && gc != null)
 					gc.getDmc().displayCheckoutTable(newLastToGo);
 			}
 
@@ -200,11 +200,12 @@ public class Player {
 					actualHighOut = lastToGo;
 				if (savedHighOut < lastToGo)
 					savedHighOut = lastToGo;
-				
-				gc.getDmc().playerWonLeg(nickname, dartsThrownInLeg);
-				gc.setGameResult(nickname);
+				if (gc != null) {
+					gc.getDmc().playerWonLeg(nickname, dartsThrownInLeg);
+					gc.setGameResult(nickname);
+				}
 			}
-		} else
+		} else if (gc != null)
 			gc.getDmc().invalidThrow();
 	}
 
@@ -407,6 +408,5 @@ public class Player {
 	public void setDartsThrownInLeg(int dartsThrownInLeg) {
 		this.dartsThrownInLeg = dartsThrownInLeg;
 	}
-	
 
 }

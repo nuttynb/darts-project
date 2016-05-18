@@ -12,6 +12,9 @@ import java.util.ResourceBundle;
 
 import javax.xml.bind.JAXBException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.aquafx_project.AquaFx;
 
 import hu.nutty.darts.model.Game;
@@ -53,12 +56,16 @@ public class GameController extends Application {
 	private CricketMainController cmc;
 	private RootPaneController rpc;
 	private Settings settings = Settings.getInstance();
+	private static Logger logger = LoggerFactory.getLogger(GameController.class);
 	List<Player> players = new ArrayList<>();
 
 	public final static String PLAYERFOLDER = "darts_files/players/";
 	public final static String SETTINGSFOLDER = "darts_files/settings/";
 	public final static String SNAPSHOTS = "darts_files/snapshots/";
 
+	public void setSnapshotEnable(){
+		rpc.setSnapshotEnable();
+	}
 	public void savePlayerToXML(Player player) {
 		try {
 			XMLUtil.toXML(player, new FileOutputStream(new File(PLAYERFOLDER + player.getNickname() + ".xml")));
@@ -96,6 +103,7 @@ public class GameController extends Application {
 		if (player1 != null && player2 != null) {
 			dmc.initializeTableValues();
 			dmc.refreshStats();
+			rpc.setSnapshotEnable();
 		}
 		saveSettingsToXML(settings);
 	}
@@ -416,6 +424,12 @@ public class GameController extends Application {
 		return player2;
 	}
 
+	public void setPlayer1(Player player1) {
+		this.player1 = player1;
+	}
+	public void setPlayer2(Player player2) {
+		this.player2 = player2;
+	}
 	public Settings getSettings() {
 		return settings;
 	}

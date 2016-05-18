@@ -152,6 +152,7 @@ public class NewGameController {
 				gc.getDmc().refreshStats();
 				gc.getDmc().clearCheckout(null);
 				gc.getDmc().setActualPlayerThrowing(0);
+				gc.setSnapshotEnable();
 				stage.close();
 			} else
 				AlertBox.display(bundle.getString("error"), bundle.getString("same"));
