@@ -60,179 +60,31 @@ public class GameController extends Application {
 	List<Player> players = new ArrayList<>();
 
 	public final static String PLAYERFOLDER = "darts_files/players/";
+	public final static String LOGFOLDER = "darts_files/logs/";
 	public final static String SETTINGSFOLDER = "darts_files/settings/";
 	public final static String SNAPSHOTS = "darts_files/snapshots/";
 
-	public void setSnapshotEnable(){
-		rpc.setSnapshotEnable();
-	}
-	public void savePlayerToXML(Player player) {
-		try {
-			XMLUtil.toXML(player, new FileOutputStream(new File(PLAYERFOLDER + player.getNickname() + ".xml")));
-		} catch (FileNotFoundException | JAXBException e) {
-			e.printStackTrace();
-		}
-	}
-
-	public void saveSettingsToXML(Settings settings) {
+	private void saveSettingsToXML(Settings settings) {
 		try {
 			XMLUtil.toXML(settings, new FileOutputStream(new File(SETTINGSFOLDER + "settings.xml")));
+			logger.info("Settings successfully saved.");
 		} catch (FileNotFoundException | JAXBException e) {
 			e.printStackTrace();
+			logger.error("Settings failed to save: " + e.getMessage());
 		}
 	}
 
-	public Settings loadSettings() throws JAXBException, FileNotFoundException {
+	private Settings loadSettings() throws JAXBException, FileNotFoundException {
+		logger.info("Loading settings...");
 		return XMLUtil.fromXML(Settings.class, new FileInputStream(new File(SETTINGSFOLDER + "settings.xml")));
 	}
 
-	public Settings loadDefaultSettings() throws JAXBException {
+	private Settings loadDefaultSettings() throws JAXBException {
+		logger.info("Loading default settings...");
 		return XMLUtil.fromXML(Settings.class,
 				getClass().getClassLoader().getResourceAsStream("hu/nutty/darts/defaultsettings.xml"));
 	}
-
-	public void settingsChosen(boolean englishLang, boolean hungarianLang, boolean modenaTheme, boolean caspianTheme,
-			boolean aquaTheme) {
-		settings.setFirstStart(false);
-		settings.setEnglishLang(englishLang);
-		settings.setHungarianLang(hungarianLang);
-		settings.setModenaTheme(modenaTheme);
-		settings.setCaspianTheme(caspianTheme);
-		settings.setAquaTheme(aquaTheme);
-		refreshAfterSettings();
-		if (player1 != null && player2 != null) {
-			dmc.initializeTableValues();
-			dmc.refreshStats();
-			rpc.setSnapshotEnable();
-		}
-		saveSettingsToXML(settings);
-	}
-
-	public void setGameResult(String winner) {
-		n01 n01Game = (n01) game;
-		if (winner.equals(player1.getNickname()))
-			n01Game.setPlayer1Legs(n01Game.getPlayer1Legs() + 1);
-		if (winner.equals(player2.getNickname()))
-			n01Game.setPlayer2Legs(n01Game.getPlayer2Legs() + 1);
-
-	}
-
-	public void newGameSelectedItems(String player1, String player2, GameInterface.GameType gameType) {
-		try {
-			this.player1 = XMLUtil.fromXML(Player.class,
-					new FileInputStream(new File(PLAYERFOLDER + player1 + ".xml")));
-
-			this.player2 = XMLUtil.fromXML(Player.class,
-					new FileInputStream(new File(PLAYERFOLDER + player2 + ".xml")));
-			this.player1.setGameType(gameType);
-			this.player2.setGameType(gameType);
-			this.player1.initializeStats();
-			this.player2.initializeStats();
-			players.clear();
-			players.add(this.player1);
-			players.add(this.player2);
-			switch (gameType) {
-			case _301:
-				game = new n01(2, players, gameType);
-				showDartsMainOverview();
-				break;
-			case _501:
-				game = new n01(2, players, gameType);
-				showDartsMainOverview();
-				break;
-			case _1001:
-				game = new n01(2, players, gameType);
-				showDartsMainOverview();
-				break;
-			case cricket:
-				game = new n01(2, players, gameType);
-				showCricketMainOverview();
-				break;
-			default:
-				break;
-			}
-		} catch (FileNotFoundException | JAXBException e) {
-			e.printStackTrace();
-		}
-
-	}
-
-	public void createFolder(String folder) {
-		File fileFolders = new File(folder);
-
-		if (!fileFolders.exists() || !fileFolders.isDirectory()) {
-			System.out.println("folder not exist");
-			boolean success = fileFolders.mkdirs();
-			System.out.println("folders created");
-			if (!success) {
-				AlertBox.display(bundle.getString("error"), bundle.getString("folder"));
-				System.exit(1);
-			}
-		}
-	}
-
-	public static ObservableList<String> getPlayerNames() {
-		return XMLUtil.getExistingPlayerNames(PLAYERFOLDER);
-	}
-
-	public static ObservableList<Player> getAllPlayers() {
-		ObservableList<String> allPlayerNames = getPlayerNames();
-		ObservableList<Player> allPlayers = FXCollections.observableArrayList();
-		Player player;
-		try {
-			for (String playerName : allPlayerNames) {
-				player = XMLUtil.fromXML(Player.class,
-						new FileInputStream(new File(PLAYERFOLDER + playerName + ".xml")));
-				allPlayers.add(player);
-			}
-		} catch (FileNotFoundException | JAXBException e) {
-			e.printStackTrace();
-		}
-		return allPlayers;
-	}
-
-	@Override
-	public void start(Stage primaryStage) {
-		locale = Locale.getDefault();
-		bundle = ResourceBundle.getBundle("hu.nutty.darts.MessagesBundle.MessagesBundle", locale);
-		SettingsController.setMain(this);
-		DartsMainController.setMain(this);
-		SavedStatisticsController.setMain(this);
-		Player.setMain(this);
-		Game.setMain(this);
-		AboutController.setMain(this);
-		createFolder(PLAYERFOLDER);
-		createFolder(SETTINGSFOLDER);
-		this.primaryStage = primaryStage;
-		this.primaryStage.getIcons()
-				.add(new Image(this.getClass().getClassLoader().getResourceAsStream("hu/nutty/darts/dartsicon.png")));
-		File settingsxml = new File(SETTINGSFOLDER + "settings.xml");
-		SettingsController.setBundle(bundle);
-		if (!settingsxml.exists()) {
-			try {
-				settings = loadDefaultSettings();
-				saveSettingsToXML(settings);
-
-			} catch (JAXBException e) {
-				e.printStackTrace();
-			}
-			createSettingsView();
-		} else
-			try {
-				settings = loadSettings();
-			} catch (FileNotFoundException | JAXBException e) {
-				e.printStackTrace();
-			}
-		RootPaneController.setBundle(bundle);
-		NewGameController.setBundle(bundle);
-		if (rootPane == null)
-			createRootPane();
-		refreshAfterSettings();
-		createNewGameView();
-
-	}
-
-	public void refreshAfterSettings() {
+	private void refreshAfterSettings() {
 
 		if (settings.isEnglishLang()) {
 			locale = Locale.ENGLISH;
@@ -263,8 +115,177 @@ public class GameController extends Application {
 
 	}
 
+	public void setSnapshotEnable() {
+		rpc.setSnapshotEnable();
+	}
+
+	public void savePlayerToXML(Player player) {
+		try {
+			XMLUtil.toXML(player, new FileOutputStream(new File(PLAYERFOLDER + player.getNickname() + ".xml")));
+			logger.info(player.getNickname() + " saved to XML.");
+		} catch (FileNotFoundException | JAXBException e) {
+			e.printStackTrace();
+			logger.error(player.getNickname() + "failed to save: " + e.getMessage());
+		}
+	}
+
+	public void settingsChosen(boolean englishLang, boolean hungarianLang, boolean modenaTheme, boolean caspianTheme,
+			boolean aquaTheme) {
+		settings.setFirstStart(false);
+		settings.setEnglishLang(englishLang);
+		settings.setHungarianLang(hungarianLang);
+		settings.setModenaTheme(modenaTheme);
+		settings.setCaspianTheme(caspianTheme);
+		settings.setAquaTheme(aquaTheme);
+		refreshAfterSettings();
+		if (player1 != null && player2 != null) {
+			dmc.initializeTableValues();
+			dmc.refreshStats();
+			rpc.setSnapshotEnable();
+		}
+		saveSettingsToXML(settings);
+	}
+
+	public void setGameResult(String winner) {
+		n01 n01Game = (n01) game;
+		logger.info(winner + " won the leg.");
+		if (winner.equals(player1.getNickname())) {
+			n01Game.setPlayer1Legs(n01Game.getPlayer1Legs() + 1);
+		}
+		if (winner.equals(player2.getNickname())) {
+			n01Game.setPlayer2Legs(n01Game.getPlayer2Legs() + 1);
+		}
+		logger.info("Score is: " + n01Game.getPlayer1Legs() + " - " + n01Game.getPlayer2Legs());
+	}
+
+	public void newGameSelectedItems(String player1, String player2, GameInterface.GameType gameType) {
+		try {
+			logger.info("Loading first player...");
+			this.player1 = XMLUtil.fromXML(Player.class,
+					new FileInputStream(new File(PLAYERFOLDER + player1 + ".xml")));
+			logger.info("First player successfully loaded.");
+			logger.info("Loading second player...");
+			this.player2 = XMLUtil.fromXML(Player.class,
+					new FileInputStream(new File(PLAYERFOLDER + player2 + ".xml")));
+			logger.info("Second player successfully loaded.");
+			this.player1.setGameType(gameType);
+			this.player2.setGameType(gameType);
+			this.player1.initializeStats();
+			this.player2.initializeStats();
+			players.clear();
+			players.add(this.player1);
+			players.add(this.player2);
+			switch (gameType) {
+			case _301:
+				game = new n01(2, players, gameType);
+				showDartsMainOverview();
+				break;
+			case _501:
+				game = new n01(2, players, gameType);
+				showDartsMainOverview();
+				break;
+			case _1001:
+				game = new n01(2, players, gameType);
+				showDartsMainOverview();
+				break;
+			case cricket:
+				game = new n01(2, players, gameType);
+				showCricketMainOverview();
+				break;
+			default:
+				break;
+			}
+			logger.info("A new " + gameType + " game started between " + player1 + " and " + player2 + ".");
+		} catch (FileNotFoundException | JAXBException e) {
+			e.printStackTrace();
+			logger.error("Failed to start game: " + e.getMessage());
+		}
+
+	}
+
+	public void createFolder(String folder) {
+		File fileFolders = new File(folder);
+
+		if (!fileFolders.exists() || !fileFolders.isDirectory()) {
+			logger.info("Folders do not exist.");
+			boolean success = fileFolders.mkdirs();
+			logger.info("Folders created.");
+			if (!success) {
+				AlertBox.display(bundle.getString("error"), bundle.getString("folder"));
+				logger.error("Failed to create folders. Exitting program...");
+				System.exit(1);
+			}
+		}
+	}
+
+	public static ObservableList<String> getPlayerNames() {
+		return XMLUtil.getExistingPlayerNames(PLAYERFOLDER);
+	}
+
+	public static ObservableList<Player> getAllPlayers() {
+		return XMLUtil.getAllPlayers(PLAYERFOLDER);
+	}
+
+	@Override
+	public void start(Stage primaryStage) {
+		locale = Locale.getDefault();
+		bundle = ResourceBundle.getBundle("hu.nutty.darts.MessagesBundle.MessagesBundle", locale);
+		SettingsController.setMain(this);
+		DartsMainController.setMain(this);
+		SavedStatisticsController.setMain(this);
+		Player.setMain(this);
+		Game.setMain(this);
+		AboutController.setMain(this);
+		createFolder(PLAYERFOLDER);
+		createFolder(SETTINGSFOLDER);
+		createFolder(LOGFOLDER);
+		this.primaryStage = primaryStage;
+		this.primaryStage.getIcons()
+				.add(new Image(this.getClass().getClassLoader().getResourceAsStream("hu/nutty/darts/dartsicon.png")));
+		File settingsxml = new File(SETTINGSFOLDER + "settings.xml");
+		SettingsController.setBundle(bundle);
+		if (!settingsxml.exists()) {
+			try {
+				settings = loadDefaultSettings();
+				logger.info("Default settings successfully loaded.");
+				saveSettingsToXML(settings);
+
+			} catch (JAXBException e) {
+				logger.error("Default settings failed to load: " + e.getMessage());
+				e.printStackTrace();
+			}
+			createSettingsView();
+		} else
+			try {
+				settings = loadSettings();
+				logger.info("Settings loaded.");
+			} catch (FileNotFoundException | JAXBException e) {
+				logger.error("Settings failed to load: " + e.getMessage());
+				e.printStackTrace();
+			}
+		RootPaneController.setBundle(bundle);
+		NewGameController.setBundle(bundle);
+		if (rootPane == null)
+			createRootPane();
+		refreshAfterSettings();
+		createNewGameView();
+
+	}
+
 	public static void main(String[] args) {
 		launch(args);
+	}
+	
+	public void exitProgram() {
+		boolean answer = ConfirmBox.display(bundle.getString("exit"), bundle.getString("exitmessage"));
+		if (answer) {
+			if (player1 != null && player2 != null) {
+				savePlayerToXML(player1);
+				savePlayerToXML(player2);
+			}
+			logger.info("Exitting program...");
+			primaryStage.close();
+		}
 	}
 
 	private void createRootPane() {
@@ -275,7 +296,6 @@ public class GameController extends Application {
 			rpc = loader.getController();
 			rpc.setGameController(this);
 			Scene scene = new Scene(rootPane);
-			// scene.getStylesheets().add("hu/nutty/darts/view/theme.css");
 			primaryStage.setMinWidth(800);
 			primaryStage.setMinHeight(600);
 			primaryStage.setMaximized(true);
@@ -292,7 +312,7 @@ public class GameController extends Application {
 
 	}
 
-	public void showDartsMainOverview() {
+	private void showDartsMainOverview() {
 		try {
 			FXMLLoader loader = new FXMLLoader();
 			loader.setLocation(getClass().getClassLoader().getResource("hu/nutty/darts/view/DartsMainView.fxml"));
@@ -304,7 +324,7 @@ public class GameController extends Application {
 		}
 	}
 
-	public void showCricketMainOverview() {
+	private void showCricketMainOverview() {
 		try {
 			FXMLLoader loader = new FXMLLoader();
 			loader.setLocation(getClass().getClassLoader().getResource("hu/nutty/darts/view/CricketMainView.fxml"));
@@ -313,17 +333,6 @@ public class GameController extends Application {
 			rootPane.setCenter(mainview);
 		} catch (IOException e) {
 			e.printStackTrace();
-		}
-	}
-
-	public void exitProgram() {
-		boolean answer = ConfirmBox.display(bundle.getString("exit"), bundle.getString("exitmessage"));
-		if (answer) {
-			if (player1 != null && player2 != null) {
-				savePlayerToXML(player1);
-				savePlayerToXML(player2);
-			}
-			primaryStage.close();
 		}
 	}
 
@@ -427,9 +436,11 @@ public class GameController extends Application {
 	public void setPlayer1(Player player1) {
 		this.player1 = player1;
 	}
+
 	public void setPlayer2(Player player2) {
 		this.player2 = player2;
 	}
+
 	public Settings getSettings() {
 		return settings;
 	}

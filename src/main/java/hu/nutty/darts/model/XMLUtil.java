@@ -1,6 +1,8 @@
 package hu.nutty.darts.model;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -14,12 +16,15 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import hu.nutty.darts.controller.GameController;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -36,6 +41,7 @@ public class XMLUtil {
 	 * @throws JAXBException
 	 *             on any error
 	 */
+	private static Logger logger = LoggerFactory.getLogger(XMLUtil.class);
 	public static void toXML(Object o, OutputStream os) throws JAXBException {
 		try {
 			JAXBContext context = JAXBContext.newInstance(o.getClass());
@@ -43,6 +49,7 @@ public class XMLUtil {
 			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 			marshaller.setProperty(Marshaller.JAXB_ENCODING, "UTF-8");
 			marshaller.marshal(o, os);
+			logger.info("Marshalling ended.");
 		} catch (JAXBException e) {
 			throw e;
 		}
@@ -63,6 +70,7 @@ public class XMLUtil {
 		try {
 			JAXBContext context = JAXBContext.newInstance(clazz);
 			Unmarshaller unmarshaller = context.createUnmarshaller();
+			logger.info("Unmarshalling ended.");
 			return (T) unmarshaller.unmarshal(is);
 		} catch (JAXBException e) {
 			throw e;
@@ -110,9 +118,24 @@ public class XMLUtil {
 				playerNames.add(fileName.split("\\.")[0]);
 			}
 		}
+		logger.info("Player names found.");
 		return playerNames;
 	}
-	
-	
-
+	public static ObservableList<Player> getAllPlayers(String path) {
+		ObservableList<String> allPlayerNames = getExistingPlayerNames(path);
+		ObservableList<Player> allPlayers = FXCollections.observableArrayList();
+		Player player;
+		try {
+			for (String playerName : allPlayerNames) {
+				player = XMLUtil.fromXML(Player.class,
+						new FileInputStream(new File(path + playerName + ".xml")));
+				allPlayers.add(player);
+			}
+		} catch (FileNotFoundException | JAXBException e) {
+			logger.error("Failed to load player: " + e.getMessage());
+			e.printStackTrace();
+		}
+		logger.info("All players loaded.");
+		return allPlayers;
+	}
 }
