@@ -87,6 +87,7 @@ public class NewGameController {
 		okButton.defaultButtonProperty().bind(okButton.focusedProperty());
 		createPlayerButton.defaultButtonProperty().bind(createPlayerButton.focusedProperty());
 		cancelButton.defaultButtonProperty().bind(cancelButton.focusedProperty());
+		radioCricket.setDisable(true);
 		refreshList();
 
 	}

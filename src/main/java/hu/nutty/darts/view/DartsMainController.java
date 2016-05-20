@@ -150,6 +150,7 @@ public class DartsMainController {
 		 * savedLabel.fontProperty().bind(fontTracking);
 		 * saved2Label.fontProperty().bind(fontTracking);
 		 */
+	
 
 	}
 	private void setTableColumnEditable(TableColumn<Throw, Integer> tc, Player player){

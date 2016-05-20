@@ -125,6 +125,9 @@ public class RootPaneController {
 			stage.initModality(Modality.APPLICATION_MODAL);
 			stage.setTitle(bundle.getString("about"));
 			stage.centerOnScreen();
+			stage.setResizable(false);
+			AboutController controller = loader.getController();
+			controller.setStage(stage);
 			Scene scene = new Scene(about);
 			stage.setScene(scene);
 			stage.showAndWait();
