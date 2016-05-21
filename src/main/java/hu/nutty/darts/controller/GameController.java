@@ -49,11 +49,9 @@ public class GameController extends Application {
 	private BorderPane rootPane;
 	private Locale locale;
 	private ResourceBundle bundle;
-	private Game game;
-	private Player player1;
-	private Player player2;
 	private DartsMainController dmc;
 	private CricketMainController cmc;
+	private GameService gs;
 	private RootPaneController rpc;
 	private Settings settings = Settings.getInstance();
 	private static Logger logger = LoggerFactory.getLogger(GameController.class);
@@ -138,7 +136,7 @@ public class GameController extends Application {
 		settings.setCaspianTheme(caspianTheme);
 		settings.setAquaTheme(aquaTheme);
 		refreshAfterSettings();
-		if (player1 != null && player2 != null) {
+		if (getPlayer1() != null && getPlayer2() != null) {
 			dmc.initializeTableValues();
 			dmc.refreshStats();
 			rpc.setSnapshotEnable();
@@ -146,35 +144,24 @@ public class GameController extends Application {
 		saveSettingsToXML(settings);
 	}
 
-	public void setGameResult(String winner) {
-		n01 n01Game = (n01) game;
-		logger.info(winner + " won the leg.");
-		if (winner.equals(player1.getNickname())) {
-			n01Game.setPlayer1Legs(n01Game.getPlayer1Legs() + 1);
-		}
-		if (winner.equals(player2.getNickname())) {
-			n01Game.setPlayer2Legs(n01Game.getPlayer2Legs() + 1);
-		}
-		logger.info("Score is: " + n01Game.getPlayer1Legs() + " - " + n01Game.getPlayer2Legs());
-	}
-
-	public void newGameSelectedItems(String player1, String player2, GameInterface.GameType gameType) {
+	public void newGameSelectedItems(String player1name, String player2name, GameInterface.GameType gameType) {
 		try {
 			logger.info("Loading first player...");
-			this.player1 = XMLUtil.fromXML(Player.class,
-					new FileInputStream(new File(PLAYERFOLDER + player1 + ".xml")));
+			Player player1 = XMLUtil.fromXML(Player.class,
+					new FileInputStream(new File(PLAYERFOLDER + player1name + ".xml")));
 			logger.info("First player successfully loaded.");
 			logger.info("Loading second player...");
-			this.player2 = XMLUtil.fromXML(Player.class,
-					new FileInputStream(new File(PLAYERFOLDER + player2 + ".xml")));
+			Player player2 = XMLUtil.fromXML(Player.class,
+					new FileInputStream(new File(PLAYERFOLDER + player2name + ".xml")));
 			logger.info("Second player successfully loaded.");
-			this.player1.setGameType(gameType);
-			this.player2.setGameType(gameType);
-			this.player1.initializeStats();
-			this.player2.initializeStats();
+			player1.setGameType(gameType);
+			player2.setGameType(gameType);
+			player1.initializeStats();
+			player2.initializeStats();
 			players.clear();
-			players.add(this.player1);
-			players.add(this.player2);
+			players.add(player1);
+			players.add(player2);
+			Game game = null;
 			switch (gameType) {
 			case _301:
 				game = new n01(2, players, gameType);
@@ -195,7 +182,9 @@ public class GameController extends Application {
 			default:
 				break;
 			}
-			logger.info("A new " + gameType + " game started between " + player1 + " and " + player2 + ".");
+			gs = new GameService(game);
+			dmc.initialize();
+			logger.info("A new " + gameType + " game started between " + player1name + " and " + player2name + ".");
 		} catch (FileNotFoundException | JAXBException e) {
 			e.printStackTrace();
 			logger.error("Failed to start game: " + e.getMessage());
@@ -233,8 +222,8 @@ public class GameController extends Application {
 		SettingsController.setMain(this);
 		DartsMainController.setMain(this);
 		SavedStatisticsController.setMain(this);
-		Player.setMain(this);
-		Game.setMain(this);
+		GameService.setMain(this);
+		//Game.setMain(this);
 		AboutController.setMain(this);
 		createFolder(PLAYERFOLDER);
 		createFolder(SETTINGSFOLDER);
@@ -279,9 +268,9 @@ public class GameController extends Application {
 	public void exitProgram() {
 		boolean answer = ConfirmBox.display(bundle.getString("exit"), bundle.getString("exitmessage"));
 		if (answer) {
-			if (player1 != null && player2 != null) {
-				savePlayerToXML(player1);
-				savePlayerToXML(player2);
+			if (getPlayer1() != null && getPlayer2() != null) {
+				savePlayerToXML(getPlayer1());
+				savePlayerToXML(getPlayer2());
 			}
 			logger.info("Exitting program...");
 			primaryStage.close();
@@ -382,11 +371,11 @@ public class GameController extends Application {
 	}
 
 	public Game getGame() {
-		return game;
+		return gs.getGame();
 	}
 
 	public void setGame(Game game) {
-		this.game = game;
+		gs.setGame(game);
 	}
 
 	public String getPlayerFolder() {
@@ -426,19 +415,23 @@ public class GameController extends Application {
 	}
 
 	public Player getPlayer1() {
-		return player1;
+		if (gs != null)
+			return gs.getGame().getPlayers().get(0);
+		else return null;
 	}
 
 	public Player getPlayer2() {
-		return player2;
+		if (gs != null)
+			return gs.getGame().getPlayers().get(1);
+		else return null;
 	}
 
 	public void setPlayer1(Player player1) {
-		this.player1 = player1;
+		gs.getGame().getPlayers().add(player1);
 	}
 
 	public void setPlayer2(Player player2) {
-		this.player2 = player2;
+		gs.getGame().getPlayers().add(player2);
 	}
 
 	public Settings getSettings() {
@@ -449,4 +442,8 @@ public class GameController extends Application {
 		this.settings = settings;
 	}
 
+	public GameService getGs() {
+		return gs;
+	}
+	
 }

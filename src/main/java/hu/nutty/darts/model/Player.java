@@ -13,7 +13,7 @@ import javafx.collections.ObservableList;
 @XmlAccessorType(XmlAccessType.NONE)
 public class Player {
 	private GameType gameType = GameType._501;
-	private static GameController gc;
+//	private static GameController gc;
 	@XmlElement(required = true)
 	private String name;
 	@XmlElement(required = true)
@@ -82,9 +82,9 @@ public class Player {
 
 	}
 
-	public static void setMain(GameController _gc) {
-		gc = _gc;
-	}
+	//public static void setMain(GameController _gc) {
+	//	gc = _gc;
+	//}
 
 	public void initializeStats() {
 		this.actualDartsAvg = 0;
@@ -98,8 +98,6 @@ public class Player {
 		this.actualDartsThrown = 0;
 		this.dartsThrownInLeg = 0;
 		this.actualSumScore = 0;
-		this.actualDartsAvg = 0;
-		this.actual3DartsAvg = 0;
 		this.checkoutZone = false;
 		this.actualFirstNineSumScore = 0;
 		this.actualFirstNineThrown = 0;
@@ -131,8 +129,13 @@ public class Player {
 	public ObservableList<Throw> getThrowList() {
 		return throwList;
 	}
+	
 
-	public void calculateStats() {
+	public void setThrowList(ObservableList<Throw> throwList) {
+		this.throwList = throwList;
+	}
+
+	/*public void calculateStats() {
 		if (dartsThrownInLeg <= 9) {
 			actualFirstNine = (double) actualFirstNineSumScore / (double) actualFirstNineThrown * 3.0;
 			actualFirstNine = Math.floor(actualFirstNine * 100) / 100;
@@ -208,7 +211,7 @@ public class Player {
 		} else if (gc != null)
 			gc.getDmc().invalidThrow();
 	}
-
+*/
 	public GameType getGameType() {
 		return gameType;
 	}
@@ -408,5 +411,54 @@ public class Player {
 	public void setDartsThrownInLeg(int dartsThrownInLeg) {
 		this.dartsThrownInLeg = dartsThrownInLeg;
 	}
+
+	public int getActualDartsThrown() {
+		return actualDartsThrown;
+	}
+
+	public void setActualDartsThrown(int actualDartsThrown) {
+		this.actualDartsThrown = actualDartsThrown;
+	}
+
+	public int getActualFirstNineThrown() {
+		return actualFirstNineThrown;
+	}
+
+	public void setActualFirstNineThrown(int actualFirstNineThrown) {
+		this.actualFirstNineThrown = actualFirstNineThrown;
+	}
+
+	public int getSavedFirstNineThrown() {
+		return savedFirstNineThrown;
+	}
+
+	public void setSavedFirstNineThrown(int savedFirstNineThrown) {
+		this.savedFirstNineThrown = savedFirstNineThrown;
+	}
+
+	public int getSavedFirstNineSumScore() {
+		return savedFirstNineSumScore;
+	}
+
+	public void setSavedFirstNineSumScore(int savedFirstNineSumScore) {
+		this.savedFirstNineSumScore = savedFirstNineSumScore;
+	}
+
+	public int getSavedSumScore() {
+		return savedSumScore;
+	}
+
+	public void setSavedSumScore(int savedSumScore) {
+		this.savedSumScore = savedSumScore;
+	}
+
+	public int getSavedDartsThrown() {
+		return savedDartsThrown;
+	}
+
+	public void setSavedDartsThrown(int savedDartsThrown) {
+		this.savedDartsThrown = savedDartsThrown;
+	}
+	
 
 }

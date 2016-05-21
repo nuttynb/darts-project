@@ -83,5 +83,7 @@
 	<logger name="hu.nutty.darts.model.XMLUtil" level="ALL" additivity="true">
 		<appender-ref ref="STDOUT"/>
 	</logger>
-
+	<logger name="hu.nutty.darts.controller.GameService" level="ALL" additivity="true">
+		<appender-ref ref="STDOUT"/>
+	</logger>
 </configuration>

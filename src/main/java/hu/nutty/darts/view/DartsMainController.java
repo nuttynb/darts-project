@@ -115,7 +115,7 @@ public class DartsMainController {
 	}
 
 	@FXML
-	private void initialize() {
+	public void initialize() {
 		player1Table.getStylesheets().add("hu/nutty/darts/view/table.css");
 		player2Table.getStylesheets().add("hu/nutty/darts/view/table.css");
 		player1Table.setPlaceholder(new Label(""));
@@ -175,7 +175,10 @@ public class DartsMainController {
 					player.initializeStats();
 					for (Throw throw1 : newThrowList) {
 						if (throw1.getScore() != null) {
-							player.addThrow(throw1.getScore());
+							if (tc == player1Score)
+								gc.getGs().addThrow(throw1.getScore(),0);
+							if (tc == player2Score)
+								gc.getGs().addThrow(throw1.getScore(),1);
 						}
 					}
 				}
@@ -240,9 +243,7 @@ public class DartsMainController {
 	public void playerWonLeg(String name, int dartsThrown) {
 		AlertBox.display(bundle.getString("end"),
 				name + " " + bundle.getString("won") + " " + dartsThrown + " " + bundle.getString("dartsthrown"));
-		// gc.getGame().getPlayers().get(0).resetThrows();
 		gc.getPlayer1().resetThrows();
-		// gc.getGame().getPlayers().get(1).resetThrows();
 		gc.getPlayer2().resetThrows();
 		clearCheckout(null);
 		initializeTableValues();
@@ -251,9 +252,9 @@ public class DartsMainController {
 	public void setScore() {
 		actualPlayerThrowing = actualPlayerThrowing % 2;
 		try {
-			if (gc.getGame() != null) {
+			if (gc.getGs() != null) {
 				int possibleScore = Integer.parseInt(scoreField.getText());
-				gc.getGame().getPlayers().get(actualPlayerThrowing).addThrow(possibleScore);
+				gc.getGs().addThrow(possibleScore,actualPlayerThrowing);
 				actualPlayerThrowing++;
 				int tableSize = player1Table.getItems().size() - 1;
 				player1Table.scrollTo(tableSize);
@@ -282,22 +283,22 @@ public class DartsMainController {
 		actualPlayerThrowing = actualPlayerThrowing % 2;
 		switch (event.getCode()) {
 		case F1:
-			gc.getGame().getPlayers().get(actualPlayerThrowing).addThrow(0);
+			gc.getGs().addThrow(0,actualPlayerThrowing);
 			break;
 		case F2:
-			gc.getGame().getPlayers().get(actualPlayerThrowing).addThrow(26);
+			gc.getGs().addThrow(26,actualPlayerThrowing);
 			break;
 		case F3:
-			gc.getGame().getPlayers().get(actualPlayerThrowing).addThrow(41);
+			gc.getGs().addThrow(41,actualPlayerThrowing);
 			break;
 		case F4:
-			gc.getGame().getPlayers().get(actualPlayerThrowing).addThrow(45);
+			gc.getGs().addThrow(45,actualPlayerThrowing);
 			break;
 		case F5:
-			gc.getGame().getPlayers().get(actualPlayerThrowing).addThrow(60);
+			gc.getGs().addThrow(60,actualPlayerThrowing);
 			break;
 		case F6:
-			gc.getGame().getPlayers().get(actualPlayerThrowing).addThrow(81);
+			gc.getGs().addThrow(81,actualPlayerThrowing);
 			break;
 		default:
 			actualPlayerThrowing--;

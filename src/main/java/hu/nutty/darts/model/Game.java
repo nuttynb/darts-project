@@ -7,8 +7,6 @@ import hu.nutty.darts.model.GameInterface.GameType;
 
 public abstract class Game implements GameInterface{
 	
-	private int scoreOfLegs;
-	private int scoreOfSets;
 	private GameType gameType;
 	private int numberOfPlayers;
 	private static GameController gc;
@@ -25,12 +23,7 @@ public abstract class Game implements GameInterface{
 	public List<Player> getPlayers() {
 		return players;
 	}
-	public static void setMain(GameController _gc) {
-		gc = _gc;
-	}
-
-	public void setPlayers(List<Player> players) {
-		this.players = players;
-	}
+	
+	
 
 }
