@@ -10,12 +10,6 @@ public class Throw {
 	Integer score;
 	Integer toGo;
 
-	
-	public Throw() {
-		this.score = null;
-		this.toGo = null;
-	}
-	
 	public Throw(Integer score, Integer toGo) {
 		super();
 		this.score = score;

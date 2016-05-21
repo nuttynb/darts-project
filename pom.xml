@@ -141,13 +141,18 @@
 				<version>2.7</version>
 				<configuration>
 					<instrumentation>
+						<ignoreTrivial>true</ignoreTrivial>
 						<ignores>
 							<ignore>hu.nutty.darts.view</ignore>
-							<ignore>hu.nutty.darts.model</ignore>
+							<ignore>org.slf4j.Logger</ignore>
+							<ignore>org.slf4j.LoggerFactory</ignore>
 						</ignores>
 						<excludes>
 							<exclude>hu/nutty/darts/view/*.class</exclude>
-							<exclude>hu/nutty/darts/model/*.class</exclude>
+							<exclude>hu/nutty/darts/model/XMLUtil.class</exclude>
+							<exclude>hu/nutty/darts/model/Cricket.class</exclude>
+							<exclude>hu/nutty/darts/controller/GameController.class</exclude>
+							<exclude>hu/nutty/darts/controller/GameController$1.class</exclude>
 						</excludes>
 					</instrumentation>
 				</configuration>
@@ -175,18 +180,6 @@
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>cobertura-maven-plugin</artifactId>
 				<version>2.7</version>
-				<configuration>
-					<instrumentation>
-						<ignores>
-							<ignore>hu.nutty.darts.view</ignore>
-							<ignore>hu.nutty.darts.model</ignore>
-						</ignores>
-						<excludes>
-							<exclude>hu/nutty/darts/view/*.class</exclude>
-							<exclude>hu/nutty/darts/model/*.class</exclude>
-						</excludes>
-					</instrumentation>
-				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
