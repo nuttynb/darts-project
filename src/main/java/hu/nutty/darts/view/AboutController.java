@@ -36,7 +36,7 @@ public class AboutController {
 		logoImage = new Image(this.getClass().getClassLoader().getResourceAsStream("hu/nutty/darts/dartsicon.png"));
 		logoView.setImage(logoImage);
 		aboutLabel.setText(bundle.getString("about"));
-		
+		okButton.defaultButtonProperty().bind(okButton.focusedProperty());
 	}
 	@FXML
 	private void handleOkButton(){

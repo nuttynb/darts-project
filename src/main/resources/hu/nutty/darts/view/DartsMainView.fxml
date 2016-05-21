@@ -225,11 +225,11 @@
       </HBox>
    </bottom>
    <top>
-      <HBox alignment="CENTER" prefHeight="75.0" prefWidth="680.0" BorderPane.alignment="CENTER">
+      <HBox alignment="CENTER" prefHeight="100.0" prefWidth="680.0" BorderPane.alignment="CENTER">
          <children>
             <Label fx:id="player1Label" alignment="CENTER" layoutX="512.0" layoutY="27.0" prefHeight="66.0" prefWidth="354.0" HBox.hgrow="ALWAYS">
                <font>
-                  <Font size="58.0" />
+                  <Font size="80.0" />
                </font>
             </Label>
             <Region layoutX="360.0" layoutY="10.0" prefHeight="62.0" prefWidth="29.0" />
@@ -241,7 +241,7 @@
             <Region prefHeight="62.0" prefWidth="29.0" />
             <Label fx:id="player2Label" alignment="CENTER" layoutX="130.0" layoutY="15.0" prefHeight="66.0" prefWidth="324.0" HBox.hgrow="ALWAYS">
                <font>
-                  <Font size="58.0" />
+                  <Font size="80.0" />
                </font>
             </Label>
          </children>
