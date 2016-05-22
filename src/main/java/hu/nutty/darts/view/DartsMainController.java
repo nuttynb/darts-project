@@ -133,8 +133,8 @@ public class DartsMainController {
 		statistics2Label.setText(bundle.getString("statistics"));
 		clearCheckout(null);
 		firstPlayerToThrowFirst.set(true);
-		firstPlayerToThrowFirst.addListener((v,oldValue, newValue) -> {
-			if (newValue){
+		firstPlayerToThrowFirst.addListener((v, oldValue, newValue) -> {
+			if (newValue) {
 				p1ToThrowFirst.setVisible(true);
 				p2ToThrowFirst.setVisible(false);
 			} else {
@@ -213,7 +213,6 @@ public class DartsMainController {
 		player2Table.setItems(gc.getGame().getPlayers().get(1).getThrowList());
 		player1Label.setText(gc.getGame().getPlayers().get(0).getNickname());
 		player2Label.setText(gc.getGame().getPlayers().get(1).getNickname());
-
 	}
 
 	public void refreshStats() {
@@ -234,8 +233,14 @@ public class DartsMainController {
 		p2Actual3DartsAvgLabel.setText(String.valueOf(gc.getPlayer2().getActual3DartsAvg()));
 		p1HighOutLabel.setText(String.valueOf(gc.getPlayer1().getActualHighOut()));
 		p2HighOutLabel.setText(String.valueOf(gc.getPlayer2().getActualHighOut()));
-		p1BestDartsLabel.setText(String.valueOf(gc.getPlayer1().getActualBestDarts()));
-		p2BestDartsLabel.setText(String.valueOf(gc.getPlayer2().getActualBestDarts()));
+		if (gc.getPlayer1().getActualBestDarts() != Integer.MAX_VALUE)
+			p1BestDartsLabel.setText(String.valueOf(gc.getPlayer1().getActualBestDarts()));
+		else
+			p1BestDartsLabel.setText("0");
+		if (gc.getPlayer2().getActualBestDarts() != Integer.MAX_VALUE)
+			p2BestDartsLabel.setText(String.valueOf(gc.getPlayer2().getActualBestDarts()));
+		else
+			p2BestDartsLabel.setText("0");
 		p1FirstNineLabel.setText(String.valueOf(gc.getPlayer1().getActualFirstNine()));
 		p2FirstNineLabel.setText(String.valueOf(gc.getPlayer2().getActualFirstNine()));
 	}
@@ -261,7 +266,7 @@ public class DartsMainController {
 		gc.getPlayer1().resetThrows();
 		gc.getPlayer2().resetThrows();
 		clearCheckout(null);
-		if (firstPlayerToThrowFirst.get()){
+		if (firstPlayerToThrowFirst.get()) {
 			actualPlayerThrowing = 0;
 			firstPlayerToThrowFirst.set(false);
 		} else {
