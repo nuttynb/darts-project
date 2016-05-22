@@ -31,7 +31,12 @@ public class DartsTest {
 		gc = new GameController();
 		wizard = new Player("Simon Whitlock", "The Wizard", "test@test.hu", "professional");
 		power = new Player("Phil Taylor", "The Power", "test2@test.hu", "professional");
+		wizard.setGameType(GameInterface.GameType._301);
+		wizard.resetThrows();
+		wizard.setGameType(GameInterface.GameType._1001);
+		wizard.resetThrows();
 		wizard.setGameType(GameInterface.GameType._501);
+		wizard.resetThrows();
 		power.setGameType(GameInterface.GameType._501);
 		gc.setSettings(Settings.getInstance());
 		wizard.initializeStats();
@@ -97,6 +102,11 @@ public class DartsTest {
 		assertEquals(0, game.getPlayer2Legs());
 		assertEquals(1,  game.getPlayer1Sets());
 		assertEquals(0, game.getPlayer2Sets());
+		gs.setGameResult("The Power");
+		gs.setGameResult("The Power");
+		gs.setGameResult("The Power");
+		assertEquals(1,  game.getPlayer1Sets());
+		assertEquals(1, game.getPlayer2Sets());
 	}
 	@Test
 	public void test10_doubleOutCheck() {

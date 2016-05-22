@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>hu.nutty.darts</groupId>
 	<artifactId>darts-project</artifactId>
-	<version>1.0</version>
+	<version>1.6</version>
 	<name>Darts assistant application</name>
 	<description>The implementation of the university homework project.</description>
 	<organization>
@@ -185,6 +185,10 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-checkstyle-plugin</artifactId>
 				<version>2.17</version>
+				<configuration>
+					<configLocation>${basedir}/checkstyle.xml</configLocation>
+					<excludes>hu/nutty/darts/view/*,hu/nutty/darts/model/Cricket.java</excludes>
+				</configuration>
 				<reportSets>
 					<reportSet>
 						<reports>

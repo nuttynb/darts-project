@@ -9,6 +9,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
 <?import javafx.scene.text.Font?>
 
 <BorderPane onKeyPressed="#keyListener" prefHeight="600.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="hu.nutty.darts.view.DartsMainController">
@@ -227,19 +228,23 @@
    <top>
       <HBox alignment="CENTER" prefHeight="100.0" prefWidth="680.0" BorderPane.alignment="CENTER">
          <children>
-            <Label fx:id="player1Label" alignment="CENTER" layoutX="512.0" layoutY="27.0" prefHeight="66.0" prefWidth="354.0" HBox.hgrow="ALWAYS">
+            <Label fx:id="player1Label" alignment="CENTER" layoutX="512.0" layoutY="27.0" prefHeight="66.0" HBox.hgrow="ALWAYS">
                <font>
                   <Font size="80.0" />
                </font>
             </Label>
-            <Region layoutX="360.0" layoutY="10.0" prefHeight="62.0" prefWidth="29.0" />
-            <Label prefHeight="40.0" prefWidth="79.0" text="vs.">
+            <Region prefHeight="100.0" prefWidth="35.0" />
+            <Circle fx:id="p1ToThrowFirst" radius="5.0" stroke="BLACK" strokeType="INSIDE" />
+            <Region layoutX="360.0" layoutY="10.0" prefHeight="62.0" prefWidth="35.0" />
+            <Label prefHeight="40.0" text="vs.">
                <font>
                   <Font size="33.0" />
                </font>
             </Label>
-            <Region prefHeight="62.0" prefWidth="29.0" />
-            <Label fx:id="player2Label" alignment="CENTER" layoutX="130.0" layoutY="15.0" prefHeight="66.0" prefWidth="324.0" HBox.hgrow="ALWAYS">
+            <Region prefHeight="62.0" prefWidth="35.0" />
+            <Circle fx:id="p2ToThrowFirst" layoutX="341.0" layoutY="60.0" radius="5.0" stroke="BLACK" strokeType="INSIDE" visible="false" />
+            <Region layoutX="337.0" layoutY="10.0" prefHeight="100.0" prefWidth="35.0" />
+            <Label fx:id="player2Label" alignment="CENTER" layoutX="130.0" layoutY="15.0" prefHeight="66.0" HBox.hgrow="ALWAYS">
                <font>
                   <Font size="80.0" />
                </font>

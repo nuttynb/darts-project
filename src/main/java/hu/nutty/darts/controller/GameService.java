@@ -8,6 +8,12 @@ import hu.nutty.darts.model.Throw;
 import hu.nutty.darts.model.n01;
 import javafx.collections.ObservableList;
 
+/**
+ * A játékos dobásait vezérlő osztály.
+ * 
+ * @author nutty
+ *
+ */
 public class GameService {
 	private Game game;
 	private static GameController gc;
@@ -42,11 +48,23 @@ public class GameService {
 	private boolean checkoutZone = false;
 	private boolean playerWon = false;
 
+	/**
+	 * Konstruktor.
+	 * 
+	 * @param game
+	 *            a vezérlendő játék
+	 */
 	public GameService(Game game) {
 		super();
 		this.game = game;
 	}
 
+	/**
+	 * A main GameController referenciájának átadása.
+	 * 
+	 * @param _gc
+	 *            main class referencia
+	 */
 	public static void setMain(GameController _gc) {
 		gc = _gc;
 	}
@@ -112,6 +130,9 @@ public class GameService {
 
 	}
 
+	/**
+	 * Statisztika kiszámolása.
+	 */
 	public void calculateStats() {
 		if (dartsThrownInLeg <= 9) {
 			actualFirstNine = (double) actualFirstNineSumScore / (double) actualFirstNineThrown * 3.0;
@@ -129,6 +150,15 @@ public class GameService {
 		saved3DartsAvg = Math.floor(saved3DartsAvg * 100) / 100;
 	}
 
+	/**
+	 * Újabb dobott értéket ad hozzá a listához, közben a statisztikát
+	 * módosítja.
+	 * 
+	 * @param score
+	 *            a dobott érték a körben
+	 * @param player
+	 *            melyik játékos dobta (index)
+	 */
 	public void addThrow(int score, int player) {
 		playerWon = false;
 		ObservableList<Throw> throwList = game.getPlayers().get(player).getThrowList();
@@ -137,7 +167,8 @@ public class GameService {
 		if (score <= 180 && score <= lastToGo && score >= 0) {
 			throwList.get(throwList.size() - 1).setScore((lastToGo - score) != 1 ? (score) : 0);
 			throwList.add(new Throw(null, (lastToGo - score) != 1 ? (lastToGo - score) : lastToGo));
-			logger.info(game.getPlayers().get(player).getNickname() + " threw " + score + " score.");
+			logger.info(game.getPlayers().get(player).getNickname() + " threw "
+					+ ((lastToGo - score) != 1 ? (score) : 0) + " score.");
 			dartsThrownInLeg += 3;
 			actualDartsThrown += 3;
 			savedDartsThrown += 3;
@@ -189,7 +220,8 @@ public class GameService {
 			}
 		} else if (gc != null) {
 			gc.getDmc().invalidThrow();
-			logger.warn("Invalid throw by "+game.getPlayers().get(player).getNickname()+ " with " + score + " score.");
+			logger.warn(
+					"Invalid throw by " + game.getPlayers().get(player).getNickname() + " with " + score + " score.");
 		}
 		setPlayerStatistics(player);
 		if (playerWon)
@@ -197,6 +229,12 @@ public class GameService {
 
 	}
 
+	/**
+	 * Beállítja a meccs állását: legek, szettek.
+	 * 
+	 * @param winner
+	 *            aki nyerte az adott leget (becenév)
+	 */
 	public void setGameResult(String winner) {
 		n01 n01Game = (n01) game;
 		logger.info(winner + " won the leg.");

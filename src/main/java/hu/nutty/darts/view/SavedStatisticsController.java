@@ -1,7 +1,6 @@
 package hu.nutty.darts.view;
 
 import java.util.ResourceBundle;
-
 import hu.nutty.darts.controller.GameController;
 import hu.nutty.darts.model.Player;
 import javafx.fxml.FXML;
@@ -10,7 +9,9 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 public class SavedStatisticsController {
+	@SuppressWarnings("unused")
 	private static GameController gc;
+	@SuppressWarnings("unused")
 	private static ResourceBundle bundle;
 	@FXML
 	private TableView<Player> playersTable;
@@ -38,7 +39,7 @@ public class SavedStatisticsController {
 	private TableColumn<Player, Integer> highOutColumn;
 	@FXML
 	private TableColumn<Player, Integer> bestDartsColumn;
-	
+
 	public static void setMain(GameController _gc) {
 		gc = _gc;
 	}
@@ -46,12 +47,12 @@ public class SavedStatisticsController {
 	public static void setBundle(ResourceBundle _bundle) {
 		bundle = _bundle;
 	}
-	
+
 	@FXML
 	private void initialize() {
 		initializeTableValues();
 	}
-	
+
 	public void initializeTableValues() {
 		nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
 		nicknameColumn.setCellValueFactory(new PropertyValueFactory<>("nickname"));
@@ -65,7 +66,7 @@ public class SavedStatisticsController {
 		tonEightyColumn.setCellValueFactory(new PropertyValueFactory<>("savedTonEighty"));
 		highOutColumn.setCellValueFactory(new PropertyValueFactory<>("savedHighOut"));
 		bestDartsColumn.setCellValueFactory(new PropertyValueFactory<>("savedBestDarts"));
-		
+
 		playersTable.setItems(GameController.getAllPlayers());
 	}
 

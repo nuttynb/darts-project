@@ -1,20 +1,27 @@
 <?xml version="1.0"?>
 <!DOCTYPE module PUBLIC "-//Puppy Crawl//DTD Check Configuration 1.2//EN" "http://www.puppycrawl.com/dtds/configuration_1_2.dtd">
 <module name="Checker">
-	<module name="SuppressWarningsFilter"/>
+	<module name="SuppressionCommentFilter" />
+	<module name="SuppressWarningsFilter" />
 	<module name="TreeWalker">
-	<module name="SuppressWarningsHolder"/>
+		<property name="tabWidth" value="4" />
+		<module name="FileContentsHolder" />
+		<module name="SuppressWarningsHolder" />
+		<module name="AtclauseOrder" />
 		<module name="JavadocMethod">
-		<property name="excludeScope" value="private"/>
+			<property name="excludeScope" value="private" />
+			<property name="allowMissingPropertyJavadoc" value="true" />
 		</module>
-		<module name="JavadocStyle">
-		<property name="excludeScope" value="private"/>
-		</module>
+		<module name="JavadocStyle" />
 		<module name="JavadocType">
-		<property name="excludeScope" value="private"/>
+			<property name="scope" value="public" />
 		</module>
 		<module name="JavadocVariable">
-		<property name="excludeScope" value="private"/>
+			<property name="excludeScope" value="private" />
+		</module>
+		<module name="LineLength">
+			<property name="max" value="130" />
+			<property name="ignorePattern" value="^ *\* *[^ ]+$" />
 		</module>
 	</module>
 </module>

@@ -1,9 +1,7 @@
 package hu.nutty.darts.view;
 
 import java.io.IOException;
-import java.util.Locale;
 import java.util.ResourceBundle;
-
 import hu.nutty.darts.controller.GameController;
 import hu.nutty.darts.model.GameInterface;
 import hu.nutty.darts.model.GameInterface.GameType;
@@ -13,12 +11,10 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.layout.BorderPane;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 public class NewGameController {
@@ -30,6 +26,7 @@ public class NewGameController {
 	private GameInterface.GameType gameType = GameType._501;
 	private String player1;
 	private String player2;
+
 	public static void setBundle(ResourceBundle _bundle) {
 		bundle = _bundle;
 	}

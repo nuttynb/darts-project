@@ -5,9 +5,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
-
 import javax.imageio.ImageIO;
-
 import hu.nutty.darts.controller.GameController;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
@@ -80,6 +78,7 @@ public class RootPaneController {
 		gc.exitProgram();
 	}
 
+	@SuppressWarnings("static-access")
 	@FXML
 	public void takeSnapshot() {
 		gc.createFolder(gc.SNAPSHOTS);
@@ -141,5 +140,4 @@ public class RootPaneController {
 	public void settingsOnClicked() {
 		gc.createSettingsView();
 	}
-
 }

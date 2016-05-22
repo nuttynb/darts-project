@@ -19,7 +19,7 @@
             <TableColumn fx:id="bestDartsColumn" prefWidth="75.0" text="Best Darts" />
             <TableColumn fx:id="tonsColumn" prefWidth="75.0" text="100+" />
             <TableColumn fx:id="tonFortyColumn" prefWidth="75.0" text="140+" />
-            <TableColumn fx:id="tonEightyColumn" prefWidth="75.0" text="180+" />
+            <TableColumn fx:id="tonEightyColumn" prefWidth="75.0" text="180" />
         </columns>
          <columnResizePolicy>
             <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />

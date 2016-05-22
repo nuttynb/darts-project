@@ -1,10 +1,8 @@
 package hu.nutty.darts.view;
 
 import java.util.ResourceBundle;
-
 import hu.nutty.darts.controller.GameController;
 import javafx.fxml.FXML;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
@@ -13,7 +11,6 @@ import javafx.stage.Stage;
 public class SettingsController {
 	private static GameController gc;
 	private static ResourceBundle bundle;
-	private Scene scene;
 	private Stage stage;
 	@FXML
 	private RadioButton hunRadio;
@@ -33,8 +30,7 @@ public class SettingsController {
 	private Label langLabel;
 	@FXML
 	private Label themesLabel;
-	
-	
+
 	@FXML
 	private void initialize() {
 		hunRadio.setText(bundle.getString("hungarian"));
@@ -45,9 +41,9 @@ public class SettingsController {
 		engRadio.setSelected(gc.getSettings().isEnglishLang());
 		modenaRadio.setSelected(gc.getSettings().isModenaTheme());
 		caspianRadio.setSelected(gc.getSettings().isCaspianTheme());
-		aquaRadio.setSelected(gc.getSettings().isAquaTheme());	
+		aquaRadio.setSelected(gc.getSettings().isAquaTheme());
 	}
-	
+
 	public static void setMain(GameController _gc) {
 		gc = _gc;
 	}
@@ -55,22 +51,21 @@ public class SettingsController {
 	public static void setBundle(ResourceBundle _bundle) {
 		bundle = _bundle;
 	}
-	public void setScene(Scene scene) {
-		this.scene = scene;
-	}
 
 	public void setStage(Stage stage) {
 		this.stage = stage;
 	}
+
 	@FXML
-	private void handleOkButton(){
-		gc.settingsChosen(engRadio.isSelected(), hunRadio.isSelected(), modenaRadio.isSelected(), caspianRadio.isSelected(), aquaRadio.isSelected());
+	private void handleOkButton() {
+		gc.settingsChosen(engRadio.isSelected(), hunRadio.isSelected(), modenaRadio.isSelected(),
+				caspianRadio.isSelected(), aquaRadio.isSelected());
 		stage.close();
 	}
+
 	@FXML
-	private void handleCancelButton(){
+	private void handleCancelButton() {
 		stage.close();
 	}
-	
 
 }

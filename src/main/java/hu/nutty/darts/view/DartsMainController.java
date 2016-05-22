@@ -6,8 +6,8 @@ import hu.nutty.darts.controller.GameController;
 import hu.nutty.darts.model.Player;
 import hu.nutty.darts.model.Throw;
 import hu.nutty.darts.model.n01;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
@@ -20,7 +20,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.text.Font;
+import javafx.scene.shape.Circle;
 import javafx.util.converter.IntegerStringConverter;
 
 public class DartsMainController {
@@ -103,8 +103,13 @@ public class DartsMainController {
 	private Label p1FirstNineLabel;
 	@FXML
 	private Label p2FirstNineLabel;
-
-	private ObjectProperty<Font> fontTracking = new SimpleObjectProperty<Font>(Font.getDefault());
+	private BooleanProperty firstPlayerToThrowFirst = new SimpleBooleanProperty(true);
+	@FXML
+	private Circle p1ToThrowFirst;
+	@FXML
+	private Circle p2ToThrowFirst;
+	// private ObjectProperty<Font> fontTracking = new
+	// SimpleObjectProperty<Font>(Font.getDefault());
 
 	public static void setMain(GameController _gc) {
 		gc = _gc;
@@ -127,6 +132,16 @@ public class DartsMainController {
 		firstNine2Label.setText(bundle.getString("firstnine"));
 		statistics2Label.setText(bundle.getString("statistics"));
 		clearCheckout(null);
+		firstPlayerToThrowFirst.set(true);
+		firstPlayerToThrowFirst.addListener((v,oldValue, newValue) -> {
+			if (newValue){
+				p1ToThrowFirst.setVisible(true);
+				p2ToThrowFirst.setVisible(false);
+			} else {
+				p1ToThrowFirst.setVisible(false);
+				p2ToThrowFirst.setVisible(true);
+			}
+		});
 		player1Table.setEditable(true);
 		player2Table.setEditable(true);
 		setTableColumnEditable(player1Score, gc.getPlayer1());
@@ -150,10 +165,10 @@ public class DartsMainController {
 		 * savedLabel.fontProperty().bind(fontTracking);
 		 * saved2Label.fontProperty().bind(fontTracking);
 		 */
-	
 
 	}
-	private void setTableColumnEditable(TableColumn<Throw, Integer> tc, Player player){
+
+	private void setTableColumnEditable(TableColumn<Throw, Integer> tc, Player player) {
 
 		tc.setCellFactory(TextFieldTableCell.<Throw, Integer> forTableColumn(new IntegerStringConverter()));
 		tc.setOnEditCommit(new EventHandler<CellEditEvent<Throw, Integer>>() {
@@ -176,9 +191,9 @@ public class DartsMainController {
 					for (Throw throw1 : newThrowList) {
 						if (throw1.getScore() != null) {
 							if (tc == player1Score)
-								gc.getGs().addThrow(throw1.getScore(),0);
+								gc.getGs().addThrow(throw1.getScore(), 0);
 							if (tc == player2Score)
-								gc.getGs().addThrow(throw1.getScore(),1);
+								gc.getGs().addThrow(throw1.getScore(), 1);
 						}
 					}
 				}
@@ -230,7 +245,7 @@ public class DartsMainController {
 	}
 
 	public void clearCheckout(String nickname) {
-		if (nickname == null){
+		if (nickname == null) {
 			checkout1Label.setText("");
 			checkout2Label.setText("");
 		}
@@ -246,6 +261,13 @@ public class DartsMainController {
 		gc.getPlayer1().resetThrows();
 		gc.getPlayer2().resetThrows();
 		clearCheckout(null);
+		if (firstPlayerToThrowFirst.get()){
+			actualPlayerThrowing = 0;
+			firstPlayerToThrowFirst.set(false);
+		} else {
+			actualPlayerThrowing = 1;
+			firstPlayerToThrowFirst.set(true);
+		}
 		initializeTableValues();
 	}
 
@@ -254,7 +276,7 @@ public class DartsMainController {
 		try {
 			if (gc.getGs() != null) {
 				int possibleScore = Integer.parseInt(scoreField.getText());
-				gc.getGs().addThrow(possibleScore,actualPlayerThrowing);
+				gc.getGs().addThrow(possibleScore, actualPlayerThrowing);
 				actualPlayerThrowing++;
 				int tableSize = player1Table.getItems().size() - 1;
 				player1Table.scrollTo(tableSize);
@@ -283,22 +305,22 @@ public class DartsMainController {
 		actualPlayerThrowing = actualPlayerThrowing % 2;
 		switch (event.getCode()) {
 		case F1:
-			gc.getGs().addThrow(0,actualPlayerThrowing);
+			gc.getGs().addThrow(0, actualPlayerThrowing);
 			break;
 		case F2:
-			gc.getGs().addThrow(26,actualPlayerThrowing);
+			gc.getGs().addThrow(26, actualPlayerThrowing);
 			break;
 		case F3:
-			gc.getGs().addThrow(41,actualPlayerThrowing);
+			gc.getGs().addThrow(41, actualPlayerThrowing);
 			break;
 		case F4:
-			gc.getGs().addThrow(45,actualPlayerThrowing);
+			gc.getGs().addThrow(45, actualPlayerThrowing);
 			break;
 		case F5:
-			gc.getGs().addThrow(60,actualPlayerThrowing);
+			gc.getGs().addThrow(60, actualPlayerThrowing);
 			break;
 		case F6:
-			gc.getGs().addThrow(81,actualPlayerThrowing);
+			gc.getGs().addThrow(81, actualPlayerThrowing);
 			break;
 		default:
 			actualPlayerThrowing--;

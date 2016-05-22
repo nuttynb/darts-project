@@ -11,6 +11,7 @@ import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 
 public class AboutController {
+	@SuppressWarnings("unused")
 	private static GameController gc;
 	private static ResourceBundle bundle;
 	private Stage stage;
@@ -21,6 +22,7 @@ public class AboutController {
 	@FXML
 	private Label aboutLabel;
 	private Image logoImage;
+
 	public static void setMain(GameController _gc) {
 		gc = _gc;
 	}
@@ -28,18 +30,21 @@ public class AboutController {
 	public static void setBundle(ResourceBundle _bundle) {
 		bundle = _bundle;
 	}
+
 	public void setStage(Stage stage) {
 		this.stage = stage;
 	}
+
 	@FXML
-	private void initialize(){
+	private void initialize() {
 		logoImage = new Image(this.getClass().getClassLoader().getResourceAsStream("hu/nutty/darts/dartsicon.png"));
 		logoView.setImage(logoImage);
 		aboutLabel.setText(bundle.getString("about"));
 		okButton.defaultButtonProperty().bind(okButton.focusedProperty());
 	}
+
 	@FXML
-	private void handleOkButton(){
+	private void handleOkButton() {
 		stage.close();
 	}
 

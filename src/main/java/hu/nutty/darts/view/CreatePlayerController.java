@@ -1,10 +1,7 @@
 package hu.nutty.darts.view;
 
-import java.util.Locale;
 import java.util.ResourceBundle;
-
 import org.apache.commons.validator.routines.EmailValidator;
-
 import hu.nutty.darts.controller.GameController;
 import hu.nutty.darts.model.Player;
 import javafx.fxml.FXML;
@@ -38,7 +35,7 @@ public class CreatePlayerController {
 	private Stage stage;
 	private NewGameController ngc;
 	private boolean isValidEmail = true;
-	
+
 	public static void setBundle(ResourceBundle _bundle) {
 		bundle = _bundle;
 	}
@@ -66,7 +63,7 @@ public class CreatePlayerController {
 		createButton.defaultButtonProperty().bind(createButton.focusedProperty());
 		cancelButton.defaultButtonProperty().bind(cancelButton.focusedProperty());
 		emailField.textProperty().addListener((v, oldValue, newValue) -> {
-			if (!isValidEmailAddress(newValue)){
+			if (!isValidEmailAddress(newValue)) {
 				invalidEmailLabel.setText(bundle.getString("notvalid"));
 				isValidEmail = false;
 			} else {
@@ -76,21 +73,23 @@ public class CreatePlayerController {
 		});
 
 	}
+
 	public static boolean isValidEmailAddress(String email) {
-		  return EmailValidator.getInstance().isValid(email);
-		}
+		return EmailValidator.getInstance().isValid(email);
+	}
 
 	@FXML
 	private void handleCreateButton() {
 		if (!nameField.getText().isEmpty() && !nickNameField.getText().isEmpty() && !levelField.getText().isEmpty()
 				&& !emailField.getText().isEmpty()) {
-			if ( isValidEmail ){
-			Player player = new Player(nameField.getText(), nickNameField.getText(), emailField.getText(),
-					levelField.getText());
-			gc.savePlayerToXML(player);
-			ngc.refreshList();
-			stage.setScene(scene);
-			}else AlertBox.display(bundle.getString("error"), bundle.getString("notvalid"));
+			if (isValidEmail) {
+				Player player = new Player(nameField.getText(), nickNameField.getText(), emailField.getText(),
+						levelField.getText());
+				gc.savePlayerToXML(player);
+				ngc.refreshList();
+				stage.setScene(scene);
+			} else
+				AlertBox.display(bundle.getString("error"), bundle.getString("notvalid"));
 		} else
 			AlertBox.display(bundle.getString("error"), bundle.getString("field"));
 	}

@@ -3,17 +3,22 @@ package hu.nutty.darts.model;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
-
 import hu.nutty.darts.controller.GameController;
 import hu.nutty.darts.model.GameInterface.GameType;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
+/**
+ * Egy játékos adatait tartalmazó modellosztály.
+ * 
+ * @author nutty
+ *
+ */
 @javax.xml.bind.annotation.XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
 public class Player {
 	private GameType gameType = GameType._501;
-//	private static GameController gc;
+	// private static GameController gc;
 	@XmlElement(required = true)
 	private String name;
 	@XmlElement(required = true)
@@ -67,10 +72,25 @@ public class Player {
 	private int savedDartsThrown;
 	private boolean checkoutZone = false;
 
+	/**
+	 * Paraméter nélküli konstruktor.
+	 */
 	public Player() {
 		super();
 	}
 
+	/**
+	 * Konstruktor.
+	 * 
+	 * @param name
+	 *            játékos neve
+	 * @param nickname
+	 *            játékos beceneve
+	 * @param email
+	 *            játékos e-mail címe
+	 * @param level
+	 *            játékos szintje
+	 */
 	public Player(String name, String nickname, String email, String level) {
 		super();
 		initializeStats();
@@ -82,10 +102,13 @@ public class Player {
 
 	}
 
-	//public static void setMain(GameController _gc) {
-	//	gc = _gc;
-	//}
+	// public static void setMain(GameController _gc) {
+	// gc = _gc;
+	// }
 
+	/**
+	 * Inicializája a statisztikát.
+	 */
 	public void initializeStats() {
 		this.actualDartsAvg = 0;
 		this.actual3DartsAvg = 0;
@@ -107,6 +130,10 @@ public class Player {
 
 	}
 
+	/**
+	 * Leg megnyerése utána alaphelyzetbe állítja az aktuális legre vonatkozó
+	 * adatokat.
+	 */
 	public void resetThrows() {
 		dartsThrownInLeg = 0;
 		checkoutZone = false;
@@ -129,89 +156,58 @@ public class Player {
 	public ObservableList<Throw> getThrowList() {
 		return throwList;
 	}
-	
 
 	public void setThrowList(ObservableList<Throw> throwList) {
 		this.throwList = throwList;
 	}
 
-	/*public void calculateStats() {
-		if (dartsThrownInLeg <= 9) {
-			actualFirstNine = (double) actualFirstNineSumScore / (double) actualFirstNineThrown * 3.0;
-			actualFirstNine = Math.floor(actualFirstNine * 100) / 100;
-			savedFirstNine = (double) savedFirstNineSumScore / (double) savedFirstNineThrown * 3.0;
-			savedFirstNine = Math.floor(savedFirstNine * 100) / 100;
-
-		}
-		actualDartsAvg = (double) actualSumScore / (double) actualDartsThrown;
-		actual3DartsAvg = actualDartsAvg * 3.0;
-		actualDartsAvg = Math.floor(actualDartsAvg * 100) / 100;
-		actual3DartsAvg = Math.floor(actual3DartsAvg * 100) / 100;
-		savedDartsAvg = (double) savedSumScore / (double) savedDartsThrown;
-		saved3DartsAvg = savedDartsAvg * 3.0;
-		savedDartsAvg = Math.floor(savedDartsAvg * 100) / 100;
-		saved3DartsAvg = Math.floor(saved3DartsAvg * 100) / 100;
-	}
-
-	public void addThrow(int score) {
-		// Integer lastScore = throwList.get(throwList.size() - 1).getScore();
-
-		Integer lastToGo = throwList.get(throwList.size() - 1).getToGo();
-		if (score <= 180 && score <= lastToGo && score >= 0) {
-			throwList.get(throwList.size() - 1).setScore((lastToGo - score) != 1 ? (score) : 0);
-			throwList.add(new Throw(null, (lastToGo - score) != 1 ? (lastToGo - score) : lastToGo));
-			dartsThrownInLeg += 3;
-			actualDartsThrown += 3;
-			savedDartsThrown += 3;
-			actualSumScore += score;
-			savedSumScore += score;
-			if (dartsThrownInLeg <= 9) {
-				actualFirstNineThrown += 3;
-				savedFirstNineThrown += 3;
-				actualFirstNineSumScore += score;
-				savedFirstNineSumScore += score;
-			}
-			if (score == 180) {
-				actualTonEighty++;
-				savedTonEighty++;
-			} else if (score >= 140) {
-				actualTonForty++;
-				savedTonForty++;
-			} else if (score >= 100) {
-				actualTons++;
-				savedTons++;
-			}
-			calculateStats();
-			Integer newLastToGo = throwList.get(throwList.size() - 1).getToGo();
-			if (newLastToGo <= 158 || newLastToGo == 170 || newLastToGo == 167 || newLastToGo == 164
-					|| newLastToGo == 161 || newLastToGo == 160) {
-				checkoutZone = true;
-				if (gc != null && newLastToGo == 0 || (newLastToGo < 40 && newLastToGo % 2 == 1)) {
-					checkoutZone = false;
-					gc.getDmc().clearCheckout(nickname);
-				}
-				if (checkoutZone && gc != null)
-					gc.getDmc().displayCheckoutTable(newLastToGo);
-			}
-
-			if (newLastToGo == 0) {
-				if (actualBestDarts < dartsThrownInLeg)
-					actualBestDarts = dartsThrownInLeg;
-				if (savedBestDarts < dartsThrownInLeg)
-					savedBestDarts = dartsThrownInLeg;
-				if (actualHighOut < lastToGo)
-					actualHighOut = lastToGo;
-				if (savedHighOut < lastToGo)
-					savedHighOut = lastToGo;
-				if (gc != null) {
-					gc.getDmc().playerWonLeg(nickname, dartsThrownInLeg);
-					gc.setGameResult(nickname);
-				}
-			}
-		} else if (gc != null)
-			gc.getDmc().invalidThrow();
-	}
-*/
+	/*
+	 * public void calculateStats() { if (dartsThrownInLeg <= 9) {
+	 * actualFirstNine = (double) actualFirstNineSumScore / (double)
+	 * actualFirstNineThrown * 3.0; actualFirstNine = Math.floor(actualFirstNine
+	 * * 100) / 100; savedFirstNine = (double) savedFirstNineSumScore / (double)
+	 * savedFirstNineThrown * 3.0; savedFirstNine = Math.floor(savedFirstNine *
+	 * 100) / 100;
+	 * 
+	 * } actualDartsAvg = (double) actualSumScore / (double) actualDartsThrown;
+	 * actual3DartsAvg = actualDartsAvg * 3.0; actualDartsAvg =
+	 * Math.floor(actualDartsAvg * 100) / 100; actual3DartsAvg =
+	 * Math.floor(actual3DartsAvg * 100) / 100; savedDartsAvg = (double)
+	 * savedSumScore / (double) savedDartsThrown; saved3DartsAvg = savedDartsAvg
+	 * * 3.0; savedDartsAvg = Math.floor(savedDartsAvg * 100) / 100;
+	 * saved3DartsAvg = Math.floor(saved3DartsAvg * 100) / 100; }
+	 * 
+	 * public void addThrow(int score) { // Integer lastScore =
+	 * throwList.get(throwList.size() - 1).getScore();
+	 * 
+	 * Integer lastToGo = throwList.get(throwList.size() - 1).getToGo(); if
+	 * (score <= 180 && score <= lastToGo && score >= 0) {
+	 * throwList.get(throwList.size() - 1).setScore((lastToGo - score) != 1 ?
+	 * (score) : 0); throwList.add(new Throw(null, (lastToGo - score) != 1 ?
+	 * (lastToGo - score) : lastToGo)); dartsThrownInLeg += 3; actualDartsThrown
+	 * += 3; savedDartsThrown += 3; actualSumScore += score; savedSumScore +=
+	 * score; if (dartsThrownInLeg <= 9) { actualFirstNineThrown += 3;
+	 * savedFirstNineThrown += 3; actualFirstNineSumScore += score;
+	 * savedFirstNineSumScore += score; } if (score == 180) { actualTonEighty++;
+	 * savedTonEighty++; } else if (score >= 140) { actualTonForty++;
+	 * savedTonForty++; } else if (score >= 100) { actualTons++; savedTons++; }
+	 * calculateStats(); Integer newLastToGo = throwList.get(throwList.size() -
+	 * 1).getToGo(); if (newLastToGo <= 158 || newLastToGo == 170 || newLastToGo
+	 * == 167 || newLastToGo == 164 || newLastToGo == 161 || newLastToGo == 160)
+	 * { checkoutZone = true; if (gc != null && newLastToGo == 0 || (newLastToGo
+	 * < 40 && newLastToGo % 2 == 1)) { checkoutZone = false;
+	 * gc.getDmc().clearCheckout(nickname); } if (checkoutZone && gc != null)
+	 * gc.getDmc().displayCheckoutTable(newLastToGo); }
+	 * 
+	 * if (newLastToGo == 0) { if (actualBestDarts < dartsThrownInLeg)
+	 * actualBestDarts = dartsThrownInLeg; if (savedBestDarts <
+	 * dartsThrownInLeg) savedBestDarts = dartsThrownInLeg; if (actualHighOut <
+	 * lastToGo) actualHighOut = lastToGo; if (savedHighOut < lastToGo)
+	 * savedHighOut = lastToGo; if (gc != null) {
+	 * gc.getDmc().playerWonLeg(nickname, dartsThrownInLeg);
+	 * gc.setGameResult(nickname); } } } else if (gc != null)
+	 * gc.getDmc().invalidThrow(); }
+	 */
 	public GameType getGameType() {
 		return gameType;
 	}
@@ -459,6 +455,5 @@ public class Player {
 	public void setSavedDartsThrown(int savedDartsThrown) {
 		this.savedDartsThrown = savedDartsThrown;
 	}
-	
 
 }

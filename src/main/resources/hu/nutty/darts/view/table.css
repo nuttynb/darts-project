@@ -1,7 +1,7 @@
 .table-view {
-    -fx-font-size: 30pt;
+    -fx-font-size: 28pt;
     -fx-alignment: center;
-    -fx-padding: 10;
+    -fx-padding: 5;
 }
 .table-view .column-header .label {
     -fx-font-size: 30pt;

@@ -9,14 +9,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
-
 import javax.xml.bind.JAXBException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import com.aquafx_project.AquaFx;
-
 import hu.nutty.darts.model.Game;
 import hu.nutty.darts.model.GameInterface;
 import hu.nutty.darts.model.Player;
@@ -34,7 +30,6 @@ import hu.nutty.darts.view.RootPaneController;
 import hu.nutty.darts.view.SavedStatisticsController;
 import hu.nutty.darts.view.SettingsController;
 import javafx.application.Application;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -43,6 +38,12 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
+/**
+ * A modellosztályok és a UI közötti vezérlő osztály.
+ * 
+ * @author nutty
+ *
+ */
 public class GameController extends Application {
 
 	private Stage primaryStage;
@@ -50,6 +51,7 @@ public class GameController extends Application {
 	private Locale locale;
 	private ResourceBundle bundle;
 	private DartsMainController dmc;
+	@SuppressWarnings("unused")
 	private CricketMainController cmc;
 	private GameService gs;
 	private RootPaneController rpc;
@@ -82,21 +84,28 @@ public class GameController extends Application {
 		return XMLUtil.fromXML(Settings.class,
 				getClass().getClassLoader().getResourceAsStream("hu/nutty/darts/defaultsettings.xml"));
 	}
+
 	private void refreshAfterSettings() {
 
 		if (settings.isEnglishLang()) {
 			locale = Locale.ENGLISH;
 			bundle = ResourceBundle.getBundle("hu.nutty.darts.MessagesBundle.MessagesBundle", locale);
-		} else if (settings.isHungarianLang()) {
-			locale = Locale.forLanguageTag("hu");
-			bundle = ResourceBundle.getBundle("hu.nutty.darts.MessagesBundle.MessagesBundle", locale);
+		} else {
+			if (settings.isHungarianLang()) {
+				locale = Locale.forLanguageTag("hu");
+				bundle = ResourceBundle.getBundle("hu.nutty.darts.MessagesBundle.MessagesBundle", locale);
+			}
 		}
 		if (settings.isModenaTheme()) {
 			setUserAgentStylesheet(STYLESHEET_MODENA);
-		} else if (settings.isCaspianTheme()) {
-			setUserAgentStylesheet(STYLESHEET_CASPIAN);
-		} else if (settings.isAquaTheme()) {
-			AquaFx.style();
+		} else {
+			if (settings.isCaspianTheme()) {
+				setUserAgentStylesheet(STYLESHEET_CASPIAN);
+			} else {
+				if (settings.isAquaTheme()) {
+					AquaFx.style();
+				}
+			}
 		}
 		RootPaneController.setBundle(bundle);
 		CreatePlayerController.setBundle(bundle);
@@ -105,18 +114,28 @@ public class GameController extends Application {
 		SavedStatisticsController.setBundle(bundle);
 		SettingsController.setBundle(bundle);
 		AboutController.setBundle(bundle);
-		if (rootPane == null)
+		if (rootPane == null) {
 			createRootPane();
-		else
+		} else {
 			rpc.initialize();
+		}
 		showDartsMainOverview();
 
 	}
 
+	/**
+	 * Beállítja a UI-on, hogy mostmár lehet képernyőképet készíteni.
+	 */
 	public void setSnapshotEnable() {
 		rpc.setSnapshotEnable();
 	}
 
+	/**
+	 * A paraméterként megadott játékos perzisztálása.
+	 * 
+	 * @param player
+	 *            kiírandó játékos
+	 */
 	public void savePlayerToXML(Player player) {
 		try {
 			XMLUtil.toXML(player, new FileOutputStream(new File(PLAYERFOLDER + player.getNickname() + ".xml")));
@@ -127,6 +146,20 @@ public class GameController extends Application {
 		}
 	}
 
+	/**
+	 * Beállítja a UI-ról érkező adatokkal a program beállításait.
+	 * 
+	 * @param englishLang
+	 *            angol nyelv
+	 * @param hungarianLang
+	 *            magyar nyelv
+	 * @param modenaTheme
+	 *            modena téma
+	 * @param caspianTheme
+	 *            caspian téma
+	 * @param aquaTheme
+	 *            AquaFX téma
+	 */
 	public void settingsChosen(boolean englishLang, boolean hungarianLang, boolean modenaTheme, boolean caspianTheme,
 			boolean aquaTheme) {
 		settings.setFirstStart(false);
@@ -144,6 +177,16 @@ public class GameController extends Application {
 		saveSettingsToXML(settings);
 	}
 
+	/**
+	 * Inicializál egy új játékot az UI-ról érkező adatokkal.
+	 * 
+	 * @param player1name
+	 *            első importálandó játékos nickneve (.xml neve)
+	 * @param player2name
+	 *            második importálandó játékos nickneve (.xml neve)
+	 * @param gameType
+	 *            játék típusa
+	 */
 	public void newGameSelectedItems(String player1name, String player2name, GameInterface.GameType gameType) {
 		try {
 			logger.info("Loading first player...");
@@ -192,6 +235,12 @@ public class GameController extends Application {
 
 	}
 
+	/**
+	 * Ez a metódus hozza létre a beadott útvonalon lévő mappákat.
+	 * 
+	 * @param folder
+	 *            mappák útvonala amit létre szeretnénk hozni
+	 */
 	public void createFolder(String folder) {
 		File fileFolders = new File(folder);
 
@@ -207,15 +256,29 @@ public class GameController extends Application {
 		}
 	}
 
+	/**
+	 * Visszaadja a játékosok beceneveit egy ObservableListben.
+	 * 
+	 * @return becenevek listája
+	 */
 	public static ObservableList<String> getPlayerNames() {
 		return XMLUtil.getExistingPlayerNames(PLAYERFOLDER);
 	}
 
+	/**
+	 * Betölti az összes játékost egy listába.
+	 * 
+	 * @return játékosok listája
+	 */
 	public static ObservableList<Player> getAllPlayers() {
 		return XMLUtil.getAllPlayers(PLAYERFOLDER);
 	}
 
 	@Override
+	/**
+	 * JAVAFX specifikus indítás. Beállítjuk az ablak(ok)at, valamint az
+	 * alapértelmezett localization nyelvet.
+	 */
 	public void start(Stage primaryStage) {
 		locale = Locale.getDefault();
 		bundle = ResourceBundle.getBundle("hu.nutty.darts.MessagesBundle.MessagesBundle", locale);
@@ -223,7 +286,6 @@ public class GameController extends Application {
 		DartsMainController.setMain(this);
 		SavedStatisticsController.setMain(this);
 		GameService.setMain(this);
-		//Game.setMain(this);
 		AboutController.setMain(this);
 		createFolder(PLAYERFOLDER);
 		createFolder(SETTINGSFOLDER);
@@ -244,7 +306,7 @@ public class GameController extends Application {
 				e.printStackTrace();
 			}
 			createSettingsView();
-		} else
+		} else {
 			try {
 				settings = loadSettings();
 				logger.info("Settings loaded.");
@@ -252,19 +314,31 @@ public class GameController extends Application {
 				logger.error("Settings failed to load: " + e.getMessage());
 				e.printStackTrace();
 			}
+		}
 		RootPaneController.setBundle(bundle);
 		NewGameController.setBundle(bundle);
-		if (rootPane == null)
+		if (rootPane == null) {
 			createRootPane();
+		}
 		refreshAfterSettings();
 		createNewGameView();
 
 	}
 
+	/**
+	 * Main metódus.
+	 * 
+	 * @param args
+	 *            paraméterként beadott argumentumok tömbje
+	 */
 	public static void main(String[] args) {
 		launch(args);
 	}
-	
+
+	/**
+	 * A program kilépésénél lefutó metódus. A menüből kilépve illetve az
+	 * ablakon lévő kilépés gombnál is. Elmenti a játékosokat.
+	 */
 	public void exitProgram() {
 		boolean answer = ConfirmBox.display(bundle.getString("exit"), bundle.getString("exitmessage"));
 		if (answer) {
@@ -325,6 +399,10 @@ public class GameController extends Application {
 		}
 	}
 
+	/**
+	 * Betölti az FXML-ből az Új játék ablakának beállításait, új ablakot hoz
+	 * létre.
+	 */
 	public void createNewGameView() {
 		try {
 			FXMLLoader loader = new FXMLLoader();
@@ -349,6 +427,10 @@ public class GameController extends Application {
 		}
 	}
 
+	/**
+	 * Betölti az FXML-ből a Beállítások ablakának tulajdonságait, új ablakot
+	 * hoz létre.
+	 */
 	public void createSettingsView() {
 		try {
 			FXMLLoader loader = new FXMLLoader();
@@ -361,7 +443,6 @@ public class GameController extends Application {
 			stage.centerOnScreen();
 			stage.setResizable(false);
 			Scene scene = new Scene(settingsPane);
-			controller.setScene(scene);
 			controller.setStage(stage);
 			stage.setScene(scene);
 			stage.showAndWait();
@@ -374,6 +455,12 @@ public class GameController extends Application {
 		return gs.getGame();
 	}
 
+	/**
+	 * Beállítja a játékot.
+	 * 
+	 * @param game
+	 *            játék
+	 */
 	public void setGame(Game game) {
 		gs.setGame(game);
 	}
@@ -407,29 +494,55 @@ public class GameController extends Application {
 	}
 
 	public Stage getPrimaryStage() {
-		return primaryStage;
+		return this.primaryStage;
 	}
 
 	public BorderPane getRootPane() {
-		return rootPane;
+		return this.rootPane;
 	}
 
+	/**
+	 * Visszaadja az első játékost, ha van olyan.
+	 * 
+	 * @return első játékos
+	 */
 	public Player getPlayer1() {
-		if (gs != null)
+		if (gs != null) {
 			return gs.getGame().getPlayers().get(0);
-		else return null;
+		} else {
+			return null;
+		}
 	}
 
+	/**
+	 * Visszaadja a második játékost, ha van olyan.
+	 * 
+	 * @return második játékos
+	 */
 	public Player getPlayer2() {
-		if (gs != null)
+		if (gs != null) {
 			return gs.getGame().getPlayers().get(1);
-		else return null;
+		} else {
+			return null;
+		}
 	}
 
+	/**
+	 * Beállítja az első játékost.
+	 * 
+	 * @param player1
+	 *            első játékos
+	 */
 	public void setPlayer1(Player player1) {
 		gs.getGame().getPlayers().add(player1);
 	}
 
+	/**
+	 * Beállítja a második játékost.
+	 * 
+	 * @param player2
+	 *            második játékos
+	 */
 	public void setPlayer2(Player player2) {
 		gs.getGame().getPlayers().add(player2);
 	}
@@ -443,7 +556,7 @@ public class GameController extends Application {
 	}
 
 	public GameService getGs() {
-		return gs;
+		return this.gs;
 	}
-	
+
 }

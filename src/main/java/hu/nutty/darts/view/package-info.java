@@ -1,5 +1,5 @@
 /**
- * View - View represents the visualization of the data that model contains.
+ * The view represents the visualization of the data that model contains.
  */
 /**
  * @author nutty
