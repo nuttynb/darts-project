@@ -117,7 +117,7 @@ public class Player {
 		this.actualTonForty = 0;
 		this.actualTonEighty = 0;
 		this.actualHighOut = 0;
-		this.actualBestDarts = 0;
+		this.actualBestDarts = Integer.MAX_VALUE;
 		this.actualDartsThrown = 0;
 		this.dartsThrownInLeg = 0;
 		this.actualSumScore = 0;

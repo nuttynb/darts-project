@@ -207,7 +207,7 @@ public class GameService {
 				playerWon = true;
 				if (actualBestDarts > dartsThrownInLeg)
 					actualBestDarts = dartsThrownInLeg;
-				if (savedBestDarts < dartsThrownInLeg)
+				if (savedBestDarts > dartsThrownInLeg)
 					savedBestDarts = dartsThrownInLeg;
 				if (actualHighOut < lastToGo)
 					actualHighOut = lastToGo;
