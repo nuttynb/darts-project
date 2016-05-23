@@ -99,7 +99,7 @@
 						<configuration>
 							<rules>
 								<requireJavaVersion>
-									<version>1.8</version>
+									<version>1.8.0-40</version>
 								</requireJavaVersion>
 								<requireProperty>
 									<property>java.vendor</property>
