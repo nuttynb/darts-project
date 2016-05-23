@@ -3,6 +3,8 @@
  * It controls the data flow into model object
  * and updates the view whenever data changes.
  * It keeps view and model separate.
+ */
+/**
  * @author nutty
  *
  */
